@@ -1,3 +1,4 @@
+import 'package:eduvogreen/auth/register_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -34,7 +35,12 @@ class LoginScreen extends StatelessWidget {
               ),
 
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterScreen()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1DAA51),
                   foregroundColor: Colors.white,
@@ -44,10 +50,7 @@ class LoginScreen extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                child: const Text(
-                  'Masuk'
-                  
-                  ),
+                child: const Text('Masuk'),
               ),
             ],
           ),
