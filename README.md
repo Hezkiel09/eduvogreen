@@ -1,4 +1,4 @@
-# eduvogreen
+# Eduvogreen
 
 A new Flutter project.
 
