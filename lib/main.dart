@@ -1,4 +1,5 @@
 import 'package:eduvogreen/auth/login_screen.dart';
+import 'package:eduvogreen/auth/register_screen.dart';
 import 'package:eduvogreen/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
