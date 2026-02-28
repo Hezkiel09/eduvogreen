@@ -1,9 +1,11 @@
 import 'package:eduvogreen/auth/login_screen.dart';
+import 'package:eduvogreen/core/supabase_client.dart';
 import 'package:eduvogreen/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SupabaseConfig.init();
   runApp(const MyApp());
 }
 
