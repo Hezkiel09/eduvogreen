@@ -1,6 +1,7 @@
 import 'package:eduvogreen/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/gestures.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -219,14 +220,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 16),
 
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                );
-              },
-              child: const Text('Belum punya akun? Daftar Sekarang'),
+            Center(
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(fontSize: 12),
+                  children: [
+                    const TextSpan(
+                      text: "Belum punya akun? ",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    TextSpan(
+                      text: "Daftar Sekarang",
+                      style: const TextStyle(
+                        color: Color(0xFF5B6CF6),
+                        fontWeight: FontWeight.w500,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushReplacementNamed(context, '/register');
+                        },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

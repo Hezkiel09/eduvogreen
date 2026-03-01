@@ -1,26 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../data/models/user_model.dart';
-
-// States
-class AuthState {}
-
-class Loading extends AuthState {}
-
-class Success extends AuthState {
-  final UserModel user;
-  Success(this.user);
-}
-
-class AuthError extends AuthState {
-  final String errorMessage;
-  AuthError(this.errorMessage);
-}
-
-class Initial extends AuthState {}
-
-class LoggedOut extends AuthState {}
+part 'auth_state.dart';
 
 // Cubit
 class AuthCubit extends Cubit<AuthState> {
