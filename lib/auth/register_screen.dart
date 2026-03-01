@@ -1,13 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+
+  final TextEditingController _dateController = TextEditingController();
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dateController.text =
+            DateFormat('dd MMMM yyyy').format(pickedDate);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+
           // BACKGROUND IMAGE
           SizedBox.expand(
             child: Image.asset(
@@ -18,23 +50,28 @@ class RegisterScreen extends StatelessWidget {
 
           // GREEN OVERLAY
           Container(
-            color: const Color.fromARGB(255, 15, 178, 85).withOpacity(0.85),
+            color: const Color.fromARGB(255, 15, 178, 85)
+                .withOpacity(0.85),
           ),
 
-          // CONTENT
           SafeArea(
+            bottom: false,
             child: Column(
               children: [
+
                 const SizedBox(height: 30),
+
                 Expanded(
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
+
                       Positioned.fill(
                         top: 80,
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.fromLTRB(24, 80, 24, 24),
+                          padding:
+                              const EdgeInsets.fromLTRB(24, 80, 24, 24),
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(
@@ -43,9 +80,10 @@ class RegisterScreen extends StatelessWidget {
                             ),
                           ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
                             children: [
-                              // TITLE
+
                               const Text(
                                 "Buat Akun EduvoGreen",
                                 style: TextStyle(
@@ -67,24 +105,53 @@ class RegisterScreen extends StatelessWidget {
 
                               const SizedBox(height: 24),
 
-                              _buildTextField("Nama Lengkap", Icons.person),
+                              _buildTextField(
+                                  "Nama Lengkap", Icons.person),
+
                               const SizedBox(height: 15),
 
-                              _buildTextField("Email", Icons.email),
+                              _buildTextField(
+                                  "Email", Icons.email),
+
                               const SizedBox(height: 15),
 
-                              _buildTextField("Tanggal Lahir", Icons.calendar_today),
+                              // TANGGAL LAHIR FIX
+                              TextField(
+                                controller: _dateController,
+                                readOnly: true,
+                                onTap: () => _selectDate(context),
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(
+                                    Icons.calendar_today,
+                                    color: Colors.grey,
+                                  ),
+                                  hintText: "Tanggal Lahir",
+                                  filled: true,
+                                  fillColor:
+                                      const Color(0xFFF2F2F2),
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(15),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+
                               const SizedBox(height: 24),
 
-                              // BUTTON
                               SizedBox(
                                 width: double.infinity,
                                 height: 50,
                                 child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF4FA057),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25),
+                                  style:
+                                      ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color(0xFF4FA057),
+                                    shape:
+                                        RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(
+                                              25),
                                     ),
                                   ),
                                   onPressed: () {},
@@ -100,24 +167,28 @@ class RegisterScreen extends StatelessWidget {
 
                               const SizedBox(height: 20),
 
-                              // ATAU
                               Row(
                                 children: [
-                                  const Expanded(child: Divider()),
+                                  const Expanded(
+                                      child: Divider()),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    padding:
+                                        const EdgeInsets.symmetric(
+                                            horizontal: 10),
                                     child: Text(
                                       "atau",
-                                      style: TextStyle(color: Colors.grey[600]),
+                                      style: TextStyle(
+                                          color:
+                                              Colors.grey[600]),
                                     ),
                                   ),
-                                  const Expanded(child: Divider()),
+                                  const Expanded(
+                                      child: Divider()),
                                 ],
                               ),
 
                               const SizedBox(height: 20),
 
-                              // GOOGLE BUTTON
                               SizedBox(
                                 width: double.infinity,
                                 height: 50,
@@ -128,12 +199,20 @@ class RegisterScreen extends StatelessWidget {
                                   ),
                                   label: const Text(
                                     "Daftar dengan akun Google",
-                                    style: TextStyle(color: Color(0xFF4A1F63)),
+                                    style: TextStyle(
+                                        color:
+                                            Color(0xFF4A1F63)),
                                   ),
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(color: Colors.grey.shade300),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
+                                  style:
+                                      OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                        color: Colors
+                                            .grey.shade300),
+                                    shape:
+                                        RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(
+                                              15),
                                     ),
                                   ),
                                   onPressed: () {},
@@ -142,18 +221,22 @@ class RegisterScreen extends StatelessWidget {
 
                               const SizedBox(height: 20),
 
-                              // LOGIN TEXT
-                              Center(
-                                child: RichText(
-                                  text: const TextSpan(
-                                    text: "Sudah punya akun? ",
-                                    style: TextStyle(color: Colors.grey),
+                              const Center(
+                                child: Text.rich(
+                                  TextSpan(
+                                    text:
+                                        "Sudah punya akun? ",
+                                    style: TextStyle(
+                                        color: Colors.grey),
                                     children: [
                                       TextSpan(
-                                        text: "Masuk Sekarang",
+                                        text:
+                                            "Masuk Sekarang",
                                         style: TextStyle(
-                                          color: Color(0xFF5B6CF6),
-                                          fontWeight: FontWeight.w600,
+                                          color:
+                                              Color(0xFF5B6CF6),
+                                          fontWeight:
+                                              FontWeight.w600,
                                         ),
                                       ),
                                     ],
@@ -165,7 +248,6 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
 
-                      // CHARACTER IMAGE — overlap di atas card putih
                       Positioned(
                         top: 0,
                         left: 0,
