@@ -16,7 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
+      firstDate: DateTime(1000),
       lastDate: DateTime.now(),
     );
 
