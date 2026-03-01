@@ -115,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               const SizedBox(height: 15),
 
-                              // TANGGAL LAHIR FIX
+                              // TANGGAL LAHIR
                               TextField(
                                 controller: _dateController,
                                 readOnly: true,
