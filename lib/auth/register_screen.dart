@@ -1,6 +1,6 @@
 import 'package:eduvogreen/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -10,266 +10,287 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+
+  Future<void> _selectDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dateController.text = DateFormat('dd MMMM yyyy').format(pickedDate);
+      });
+    }
+  }
 
   @override
   void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
-  void handleRegister(BuildContext context) {
-    final name = nameController.text.trim();
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-    final confirmPassword = confirmPasswordController.text.trim();
-
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Semua kolom wajib diisi')));
-      return;
-    }
-
-    if (!email.contains('@')) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Format email tidak valid')));
-      return;
-    }
-
-    if (password.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Kata sandi minimal 6 karakter')),
-      );
-      return;
-    }
-
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Kata sandi tidak cocok')));
-      return;
-    }
-
-    context.read<AuthCubit>().register(name, email, password);
+  // TEXT FIELD
+  Widget _buildTextField(String hint, IconData icon) {
+    return TextField(
+      style: const TextStyle(
+        color: Colors.black, // teks input → hitam
+        fontSize: 13,
+      ),
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, size: 18, color: Colors.grey),
+        hintText: hint,
+        hintStyle: const TextStyle(
+          fontSize: 13,
+          color: Colors.grey, // placeholder
+        ),
+        filled: true,
+        fillColor: const Color(0xFFF5F5F5),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
   }
 
+  // DATE FIELD
+  Widget _buildDateField() {
+    return TextField(
+      controller: _dateController,
+      readOnly: true,
+      onTap: _selectDate,
+      style: const TextStyle(color: Colors.black, fontSize: 13),
+      decoration: InputDecoration(
+        prefixIcon: const Icon(
+          Icons.calendar_today,
+          size: 18,
+          color: Colors.grey,
+        ),
+        hintText: "Tanggal Lahir",
+        hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
+        filled: true,
+        fillColor: const Color(0xFFF5F5F5),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  // UI
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is Success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registrasi berhasil! Silakan login.'),
-              backgroundColor: Color(0xFF1DAA51),
-            ),
-          );
-          Navigator.pushReplacementNamed(context, '/login');
-        } else if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Registrasi gagal: ${state.errorMessage}')),
-          );
-        }
-      },
-      builder: (context, state) {
-        final isLoading = state is Loading;
+    return Scaffold(
+      body: Stack(
+        children: [
+          // BACKGROUND
+          SizedBox.expand(
+            child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
+          ),
 
-        return Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: Stack(
-            children: [
-              SizedBox.expand(
-                child: Image.asset(
-                  'assets/diatas-hijau.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Container(
-                color: const Color.fromARGB(255, 15, 178, 85).withOpacity(0.85),
-              ),
-              SafeArea(
-                bottom: false,
-                child: Column(
-                  children: [
-                    // Header
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.arrow_back_ios,
-                              color: Colors.white,
-                            ),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                          const Text(
-                            'Daftar Akun',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+          // OVERLAY
+          Container(color: const Color(0xFF4FA057).withOpacity(0.9)),
+
+          SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+
+                Expanded(
+                  child: Stack(
+                    children: [
+                      // WHITE CARD
+                      Positioned(
+                        top: 155,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(40, 70, 40, 40),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // White form container
-                    Expanded(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32),
-                            topRight: Radius.circular(32),
-                          ),
-                        ),
-                        padding: const EdgeInsets.fromLTRB(20, 32, 20, 20),
-                        child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Buat Akun Baru',
+                                "Buat Akun EduvoGreen",
                                 style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+
+                              const SizedBox(height: 4),
+
                               const Text(
-                                'Bergabung dan mulai aksi lingkunganmu',
+                                "Mulai dari tahu, lanjutkan dengan aksi",
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  color: Colors.black87,
                                 ),
                               ),
-                              const SizedBox(height: 28),
 
-                              // Name
-                              TextField(
-                                controller: nameController,
-                                decoration: InputDecoration(
-                                  labelText: 'Nama Lengkap',
-                                  prefixIcon: const Icon(
-                                    Icons.person,
-                                    color: Colors.grey,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 30),
 
-                              // Email
-                              TextField(
-                                controller: emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  prefixIcon: const Icon(
-                                    Icons.email,
-                                    color: Colors.grey,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
+                              _buildTextField("Nama Lengkap", Icons.person),
+                              const SizedBox(height: 15),
 
-                              // Password
-                              TextField(
-                                controller: passwordController,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  labelText: 'Kata Sandi',
-                                  prefixIcon: const Icon(
-                                    Icons.lock,
-                                    color: Colors.grey,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
+                              _buildTextField("Email", Icons.email),
+                              const SizedBox(height: 15),
 
-                              // Confirm Password
-                              TextField(
-                                controller: confirmPasswordController,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  labelText: 'Konfirmasi Kata Sandi',
-                                  prefixIcon: const Icon(
-                                    Icons.lock_outline,
-                                    color: Colors.grey,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 28),
+                              _buildDateField(),
+                              const SizedBox(height: 30),
 
-                              // Register button
+                              // BUTTON
                               SizedBox(
                                 width: double.infinity,
-                                height: 48,
+                                height: 45,
                                 child: ElevatedButton(
-                                  onPressed: isLoading
-                                      ? null
-                                      : () => handleRegister(context),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF1DAA51),
+                                    backgroundColor: const Color(0xFF4FA057),
+                                    foregroundColor:
+                                        Colors.white, // warna text tombol
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(50),
                                     ),
+                                    elevation: 0,
                                   ),
-                                  child: isLoading
-                                      ? const CircularProgressIndicator(
-                                          color: Colors.white,
-                                        )
-                                      : const Text(
-                                          'Daftar',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                          ),
-                                        ),
+                                  onPressed: () {},
+                                  child: const Text(
+                                    "Berikutnya",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 16),
+
+                              const SizedBox(height: 20),
+
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Divider(color: Colors.grey[300]),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: Text(
+                                      "atau",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Divider(color: Colors.grey[300]),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // GOOGLE BUTTON
+                              SizedBox(
+                                width: double.infinity,
+                                height: 45,
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    side: BorderSide(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                  onPressed: () {},
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/icon-gg.png',
+                                        height: 18,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Text(
+                                        "Daftar dengan akun Google",
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
 
                               Center(
-                                child: TextButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: const Text('Sudah punya akun? Masuk'),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Sudah punya akun? ",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          '/login',
+                                        );
+                                      },
+                                      child: const Text(
+                                        "Masuk Sekarang",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF5B6CF6),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ),
-                  ],
+
+                      // IMAGE
+                      Positioned(
+                        top: 10,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/karakter-manusia.png',
+                            height: 200,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
