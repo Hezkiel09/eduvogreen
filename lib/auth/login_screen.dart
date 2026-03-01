@@ -71,7 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
 
           // GREEN OVERLAY
-          Container(color: const Color(0xFF1DAA51).withOpacity(0.85)),
+          Container(
+            color: const Color.fromARGB(255, 15, 178, 85).withOpacity(0.85),
+          ),
 
           SafeArea(
             bottom: false,
@@ -115,7 +117,6 @@ class _LoginScreenState extends State<LoginScreen> {
   /// WHITE CONTAINER LOGIN
   Widget _whiteLoginContainer() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -123,6 +124,9 @@ class _LoginScreenState extends State<LoginScreen> {
           topRight: Radius.circular(32),
         ),
       ),
+
+      padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -144,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
+                prefixIcon: Icon(Icons.email, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -157,6 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Kata Sandi',
+                prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -197,6 +203,34 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Expanded(child: Divider()),
               ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // GOOGLE SIGN IN
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: OutlinedButton.icon(
+                icon: Image.asset('assets/icon-gg.png', height: 20),
+                label: const Text(
+                  'Masuk dengan Google',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Colors.grey.shade300),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                onPressed: () {
+                  // nanti logic Google Sign In di sini
+                },
+              ),
             ),
 
             const SizedBox(height: 16),
