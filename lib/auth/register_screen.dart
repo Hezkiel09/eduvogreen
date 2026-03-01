@@ -9,21 +9,19 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-
   final TextEditingController _dateController = TextEditingController();
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1000),
+      initialDate: DateTime(2000),
+      firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
 
     if (pickedDate != null) {
       setState(() {
-        _dateController.text =
-            DateFormat('dd MMMM yyyy').format(pickedDate);
+        _dateController.text = DateFormat('dd MMMM yyyy').format(pickedDate);
       });
     }
   }
@@ -34,133 +32,145 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  // TEXT FIELD
+  Widget _buildTextField(String hint, IconData icon) {
+    return TextField(
+      style: const TextStyle(
+        color: Colors.black, // teks input → hitam
+        fontSize: 13,
+      ),
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, size: 18, color: Colors.grey),
+        hintText: hint,
+        hintStyle: const TextStyle(
+          fontSize: 13,
+          color: Colors.grey, // placeholder
+        ),
+        filled: true,
+        fillColor: const Color(0xFFF5F5F5),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  // DATE FIELD
+  Widget _buildDateField() {
+    return TextField(
+      controller: _dateController,
+      readOnly: true,
+      onTap: _selectDate,
+      style: const TextStyle(color: Colors.black, fontSize: 13),
+      decoration: InputDecoration(
+        prefixIcon: const Icon(
+          Icons.calendar_today,
+          size: 18,
+          color: Colors.grey,
+        ),
+        hintText: "Tanggal Lahir",
+        hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
+        filled: true,
+        fillColor: const Color(0xFFF5F5F5),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  // UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-
-          // BACKGROUND IMAGE
+          // BACKGROUND
           SizedBox.expand(
-            child: Image.asset(
-              'assets/images/diatas-hijau.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
 
-          // GREEN OVERLAY
-          Container(
-            color: const Color.fromARGB(255, 15, 178, 85)
-                .withOpacity(0.85),
-          ),
+          // OVERLAY
+          Container(color: const Color(0xFF4FA057).withOpacity(0.9)),
 
           SafeArea(
             bottom: false,
             child: Column(
               children: [
-
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
 
                 Expanded(
                   child: Stack(
-                    clipBehavior: Clip.none,
                     children: [
-
-                      Positioned.fill(
-                        top: 80,
+                      // WHITE CARD
+                      Positioned(
+                        top: 155,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
                         child: Container(
-                          width: double.infinity,
-                          padding:
-                              const EdgeInsets.fromLTRB(24, 80, 24, 24),
+                          padding: const EdgeInsets.fromLTRB(40, 70, 40, 40),
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40),
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
                             ),
                           ),
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
                               const Text(
                                 "Buat Akun EduvoGreen",
                                 style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF4A1F63),
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
 
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 4),
 
                               const Text(
                                 "Mulai dari tahu, lanjutkan dengan aksi",
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  color: Colors.black87,
                                 ),
                               ),
 
-                              const SizedBox(height: 24),
+                              const SizedBox(height: 30),
 
-                              _buildTextField(
-                                  "Nama Lengkap", Icons.person),
-
+                              _buildTextField("Nama Lengkap", Icons.person),
                               const SizedBox(height: 15),
 
-                              _buildTextField(
-                                  "Email", Icons.email),
-
+                              _buildTextField("Email", Icons.email),
                               const SizedBox(height: 15),
 
-                              // TANGGAL LAHIR
-                              TextField(
-                                controller: _dateController,
-                                readOnly: true,
-                                onTap: () => _selectDate(context),
-                                decoration: InputDecoration(
-                                  prefixIcon: const Icon(
-                                    Icons.calendar_today,
-                                    color: Colors.grey,
-                                  ),
-                                  hintText: "Tanggal Lahir",
-                                  filled: true,
-                                  fillColor:
-                                      const Color(0xFFF2F2F2),
-                                  border: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(15),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                              ),
+                              _buildDateField(),
+                              const SizedBox(height: 30),
 
-                              const SizedBox(height: 24),
-
+                              // BUTTON
                               SizedBox(
                                 width: double.infinity,
-                                height: 50,
+                                height: 45,
                                 child: ElevatedButton(
-                                  style:
-                                      ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color(0xFF4FA057),
-                                    shape:
-                                        RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(
-                                              25),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF4FA057),
+                                    foregroundColor:
+                                        Colors.white, // warna text tombol
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
                                     ),
+                                    elevation: 0,
                                   ),
                                   onPressed: () {},
                                   child: const Text(
                                     "Berikutnya",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),
+                                    style: TextStyle(fontSize: 14),
                                   ),
                                 ),
                               ),
@@ -169,53 +179,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               Row(
                                 children: [
-                                  const Expanded(
-                                      child: Divider()),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 10),
+                                  Expanded(
+                                    child: Divider(color: Colors.grey[300]),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
                                     child: Text(
                                       "atau",
-                                      style: TextStyle(
-                                          color:
-                                              Colors.grey[600]),
+                                      style: TextStyle(fontSize: 12),
                                     ),
                                   ),
-                                  const Expanded(
-                                      child: Divider()),
+                                  Expanded(
+                                    child: Divider(color: Colors.grey[300]),
+                                  ),
                                 ],
                               ),
 
                               const SizedBox(height: 20),
 
+                              // GOOGLE BUTTON
                               SizedBox(
                                 width: double.infinity,
-                                height: 50,
-                                child: OutlinedButton.icon(
-                                  icon: Image.asset(
-                                    'assets/images/icon-gg.png',
-                                    height: 20,
-                                  ),
-                                  label: const Text(
-                                    "Daftar dengan akun Google",
-                                    style: TextStyle(
-                                        color:
-                                            Color(0xFF4A1F63)),
-                                  ),
-                                  style:
-                                      OutlinedButton.styleFrom(
+                                height: 45,
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
                                     side: BorderSide(
-                                        color: Colors
-                                            .grey.shade300),
-                                    shape:
-                                        RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(
-                                              15),
+                                      color: Colors.grey.shade300,
                                     ),
                                   ),
                                   onPressed: () {},
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/icon-gg.png',
+                                        height: 18,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Text(
+                                        "Daftar dengan akun Google",
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
 
@@ -224,19 +238,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               const Center(
                                 child: Text.rich(
                                   TextSpan(
-                                    text:
-                                        "Sudah punya akun? ",
+                                    text: "Sudah punya akun? ",
                                     style: TextStyle(
-                                        color: Colors.grey),
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
                                     children: [
                                       TextSpan(
-                                        text:
-                                            "Masuk Sekarang",
+                                        text: "Masuk Sekarang",
                                         style: TextStyle(
-                                          color:
-                                              Color(0xFF5B6CF6),
-                                          fontWeight:
-                                              FontWeight.w600,
+                                          color: Color(0xFF5B6CF6),
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                     ],
@@ -248,17 +260,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
 
+                      // IMAGE
                       Positioned(
-                        top: 0,
+                        top: 10,
                         left: 0,
                         right: 0,
                         child: Center(
-                          child: SizedBox(
-                            height: 160,
-                            child: Image.asset(
-                              'assets/images/karakter-manusia.png',
-                              fit: BoxFit.contain,
-                            ),
+                          child: Image.asset(
+                            'assets/karakter-manusia.png',
+                            height: 200,
                           ),
                         ),
                       ),
@@ -272,19 +282,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-}
-
-Widget _buildTextField(String hint, IconData icon) {
-  return TextField(
-    decoration: InputDecoration(
-      prefixIcon: Icon(icon, color: Colors.grey),
-      hintText: hint,
-      filled: true,
-      fillColor: const Color(0xFFF2F2F2),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide.none,
-      ),
-    ),
-  );
 }
