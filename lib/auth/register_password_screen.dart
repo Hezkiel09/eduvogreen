@@ -134,7 +134,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                         "Saya setuju untuk mendukung keberlanjutan lingkungan",
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: Color(0xFF6A1B9A),
+                                          color: Colors.black87,
                                         ),
                                       ),
                                     ),
