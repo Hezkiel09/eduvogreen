@@ -1,59 +1,216 @@
-import 'package:eduvogreen/auth/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'auth_service.dart';
+import 'register_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final AuthService authService = AuthService();
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> handleLogin() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (!email.contains('@')) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Format email tidak valid')));
+      return;
+    }
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email dan kata sandi wajib diisi')),
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      await authService.logIn(email: email, password: password);
+
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/home');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login gagal: $e')));
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: .center,
-            spacing: 20,
-            children: [
-              Text(
-                'Selamat Datang Kembali',
-                style: TextStyle(fontSize: 32, color: Colors.black),
-              ),
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          // BACKGROUND IMAGE
+          SizedBox.expand(
+            child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
+          ),
 
-              TextField(
-                decoration: InputDecoration(
-                  label: Text('Email'),
-                  border: OutlineInputBorder(),
-                ),
-              ),
+          // GREEN OVERLAY
+          Container(color: const Color(0xFF1DAA51).withOpacity(0.85)),
 
-              TextField(
-                decoration: InputDecoration(
-                  label: Text('Kata Sandi'),
-                  border: OutlineInputBorder(),
-                ),
-              ),
+          SafeArea(
+            bottom: false,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // const SizedBox(height: 20),
 
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1DAA51),
-                  foregroundColor: Colors.white,
-
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                // ILUSTRASI
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: SizedBox(
+                      child: Image.asset(
+                        'assets/karakter-manusia.png',
+                        height: 200,
+                      ),
+                    ),
                   ),
                 ),
-                child: const Text('Masuk'),
-              ),
-            ],
+
+                // BAGIAN PUTIH
+                Expanded(
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned.fill(top: 150, child: _whiteLoginContainer()),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  /// WHITE CONTAINER LOGIN
+  Widget _whiteLoginContainer() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(32),
+          topRight: Radius.circular(32),
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Text(
+              'Selamat Datang Kembali',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 6),
+
+            const Text(
+              'Masuk untuk mulai aksi lingkunganmu',
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+
+            const SizedBox(height: 24),
+
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Kata Sandi',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // login
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: isLoading ? null : handleLogin,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1DAA51),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        'Masuk',
+                        style: TextStyle(color: Colors.white),
+                      ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Row(
+              children: const [
+                Expanded(child: Divider()),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: Text('atau'),
+                ),
+                Expanded(child: Divider()),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                );
+              },
+              child: const Text('Belum punya akun? Daftar Sekarang'),
+            ),
+          ],
         ),
       ),
     );

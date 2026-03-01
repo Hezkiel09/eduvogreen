@@ -1,16 +1,12 @@
 import 'package:eduvogreen/auth/login_screen.dart';
-import 'package:eduvogreen/auth/register_screen.dart';
+import 'package:eduvogreen/core/supabase_client.dart';
 import 'package:eduvogreen/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Supabase.initialize(
-    url: 'https://ggmuabyxueptonlsyskp.supabase.co',
-    anonKey: 'sb_publishable_lfwje-AJElIiFkw4FBpYHA_lifcX9Yo',
-  );
+  await SupabaseConfig.init();
   runApp(const MyApp());
 }
 
@@ -21,8 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
+      title: 'EduVoGreen',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
       home: LoginScreen(),
     );
