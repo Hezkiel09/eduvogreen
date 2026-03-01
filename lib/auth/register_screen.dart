@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'register_password_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -35,17 +36,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // TEXT FIELD
   Widget _buildTextField(String hint, IconData icon) {
     return TextField(
-      style: const TextStyle(
-        color: Colors.black, // teks input → hitam
-        fontSize: 13,
-      ),
+      style: const TextStyle(color: Colors.black, fontSize: 13),
       decoration: InputDecoration(
         prefixIcon: Icon(icon, size: 18, color: Colors.grey),
         hintText: hint,
-        hintStyle: const TextStyle(
-          fontSize: 13,
-          color: Colors.grey, // placeholder
-        ),
+        hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
         filled: true,
         fillColor: const Color(0xFFF5F5F5),
         contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -160,14 +155,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF4FA057),
-                                    foregroundColor:
-                                        Colors.white, // warna text tombol
+                                    foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                     elevation: 0,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const RegisterPasswordScreen(),
+                                      ),
+                                    );
+                                  },
                                   child: const Text(
                                     "Berikutnya",
                                     style: TextStyle(fontSize: 14),
@@ -281,5 +282,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ],
       ),
     );
+  }
+}
+
+class Dot extends StatefulWidget {
+  final int delay;
+  const Dot({this.delay = 0});
+
+  @override
+  State<Dot> createState() => _DotState();
+}
+
+class _DotState extends State<Dot> with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 600),
+    );
+
+    Future.delayed(Duration(milliseconds: widget.delay), () {
+      controller.repeat(reverse: true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (_, child) {
+        return Transform.translate(
+          offset: Offset(0, controller.value * -8),
+          child: child,
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 3),
+        width: 6,
+        height: 6,
+        decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }
