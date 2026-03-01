@@ -288,7 +288,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                       onPressed: () {
                                         if (_formKey.currentState!.validate() &&
                                             _isChecked) {
-                                          // Kirim ke backend / Firebase
+                                          // Kirim ke backend / Supabase
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
