@@ -8,6 +8,8 @@ class RegisterPasswordScreen extends StatefulWidget {
 }
 
 class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
@@ -24,6 +26,13 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
     super.dispose();
   }
 
+  bool isStrongPassword(String value) {
+    final regex = RegExp(
+      r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$',
+    );
+    return regex.hasMatch(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,15 +47,13 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
           Container(color: const Color(0xFF4FA057).withOpacity(0.9)),
 
           SafeArea(
-            bottom: false, // ✅ sama seperti screen pertama
+            bottom: false,
             child: Column(
               children: [
                 const SizedBox(height: 10),
-
                 Expanded(
                   child: Stack(
                     children: [
-                      // WHITE CARD
                       Positioned(
                         top: 155,
                         left: 0,
@@ -62,113 +69,261 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                             ),
                           ),
                           child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Buat Akun EduvoGreen",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 4),
-
-                                const Text(
-                                  "Mulai dari tahu, lanjutkan dengan aksi",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 30),
-
-                                _buildTextField(
-                                  controller: _usernameController,
-                                  hint: "Nama Pengguna",
-                                  icon: Icons.person,
-                                ),
-
-                                const SizedBox(height: 15),
-
-                                _buildPasswordField(
-                                  controller: _passwordController,
-                                  hint: "Kata Sandi",
-                                  obscure: _obscurePassword,
-                                  toggle: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                ),
-
-                                const SizedBox(height: 15),
-
-                                _buildPasswordField(
-                                  controller: _confirmController,
-                                  hint: "Konfirmasi Kata Sandi",
-                                  obscure: _obscureConfirm,
-                                  toggle: () {
-                                    setState(() {
-                                      _obscureConfirm = !_obscureConfirm;
-                                    });
-                                  },
-                                ),
-
-                                const SizedBox(height: 15),
-
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: _isChecked,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _isChecked = value!;
-                                        });
-                                      },
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Buat Akun EduvoGreen",
+                                    style: TextStyle(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    const Expanded(
-                                      child: Text(
-                                        "Saya setuju untuk mendukung keberlanjutan lingkungan",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.black87,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text(
+                                    "Mulai dari tahu, lanjutkan dengan aksi",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 30),
+
+                                  // Username
+                                  TextFormField(
+                                    controller: _usernameController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Nama Pengguna wajib diisi";
+                                      }
+                                      return null;
+                                    },
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                    ),
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.person,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      hintText: "Nama Pengguna",
+                                      hintStyle: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey,
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFF5F5F5),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 15),
+
+                                  // Password
+                                  TextFormField(
+                                    controller: _passwordController,
+                                    obscureText: _obscurePassword,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Kata Sandi wajib diisi";
+                                      }
+                                      if (!isStrongPassword(value)) {
+                                        return "Minimal 8 karakter, kombinasi huruf, angka & simbol";
+                                      }
+                                      return null;
+                                    },
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                    ),
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.lock,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _obscurePassword
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          size: 18,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _obscurePassword =
+                                                !_obscurePassword;
+                                          });
+                                        },
+                                      ),
+                                      hintText: "Kata Sandi",
+                                      hintStyle: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey,
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFF5F5F5),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 15),
+
+                                  // Konfirmasi Password
+                                  TextFormField(
+                                    controller: _confirmController,
+                                    obscureText: _obscureConfirm,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Konfirmasi Kata Sandi wajib diisi";
+                                      }
+                                      if (value != _passwordController.text) {
+                                        return "Kata Sandi tidak cocok";
+                                      }
+                                      return null;
+                                    },
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                    ),
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.lock,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _obscureConfirm
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          size: 18,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _obscureConfirm = !_obscureConfirm;
+                                          });
+                                        },
+                                      ),
+                                      hintText: "Konfirmasi Kata Sandi",
+                                      hintStyle: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey,
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFF5F5F5),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 15),
+
+                                  // Checkbox
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _isChecked,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _isChecked = value!;
+                                          });
+                                        },
+                                      ),
+                                      const Expanded(
+                                        child: Text(
+                                          "Saya setuju untuk mendukung keberlanjutan lingkungan",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black87,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
 
-                                const SizedBox(height: 20),
+                                  const SizedBox(height: 20),
 
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 45,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF4FA057),
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
+                                  // Submit Button
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 45,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(
+                                          0xFF4FA057,
+                                        ),
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            50,
+                                          ),
+                                        ),
+                                        elevation: 0,
                                       ),
-                                      elevation: 0,
-                                    ),
-                                    onPressed: () {},
-                                    child: const Text(
-                                      "Masuk",
-                                      style: TextStyle(fontSize: 14),
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate() &&
+                                            _isChecked) {
+                                          // Kirim ke backend / Firebase
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Akun berhasil dibuat",
+                                              ),
+                                            ),
+                                          );
+                                        } else if (!_isChecked) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Kamu harus setuju dengan pernyataan",
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: const Text(
+                                        "Masuk",
+                                        style: TextStyle(fontSize: 14),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
 
-                      // IMAGE KARAKTER (SAMA PERSIS)
+                      // IMAGE KARAKTER
                       Positioned(
                         top: 10,
                         left: 0,
@@ -181,7 +336,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                         ),
                       ),
 
-                      // BACK BUTTON (di atas image)
+                      // BACK BUTTON
                       Positioned(
                         top: -15,
                         left: 10,
@@ -202,61 +357,6 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-  }) {
-    return TextField(
-      controller: controller,
-      style: const TextStyle(color: Colors.black, fontSize: 13),
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, size: 18, color: Colors.grey),
-        hintText: hint,
-        hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
-        filled: true,
-        fillColor: const Color(0xFFF5F5F5),
-        contentPadding: const EdgeInsets.symmetric(vertical: 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPasswordField({
-    required TextEditingController controller,
-    required String hint,
-    required bool obscure,
-    required VoidCallback toggle,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscure,
-      style: const TextStyle(color: Colors.black, fontSize: 13),
-      decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.lock, size: 18, color: Colors.grey),
-        suffixIcon: IconButton(
-          icon: Icon(
-            obscure ? Icons.visibility_off : Icons.visibility,
-            size: 18,
-          ),
-          onPressed: toggle,
-        ),
-        hintText: hint,
-        hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
-        filled: true,
-        fillColor: const Color(0xFFF5F5F5),
-        contentPadding: const EdgeInsets.symmetric(vertical: 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
       ),
     );
   }

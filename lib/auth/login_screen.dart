@@ -10,6 +10,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -28,24 +30,19 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // BACKGROUND
           SizedBox.expand(
             child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
-
-          // OVERLAY
           Container(color: const Color(0xFF4FA057).withOpacity(0.9)),
 
           SafeArea(
-            bottom: false, // ✅ SAMA PERSIS
+            bottom: false,
             child: Column(
               children: [
                 const SizedBox(height: 10),
-
                 Expanded(
                   child: Stack(
                     children: [
-                      // WHITE CARD
                       Positioned(
                         top: 155,
                         left: 0,
@@ -61,200 +58,208 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Selamat Datang Kembali",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 4),
-
-                                const Text(
-                                  "Masuk untuk mulai aksi lingkunganmu",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 30),
-
-                                _buildTextField(
-                                  controller: _emailController,
-                                  hint: "Email",
-                                  icon: Icons.email,
-                                ),
-
-                                const SizedBox(height: 15),
-
-                                _buildPasswordField(),
-
-                                const SizedBox(height: 0),
-
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: _rememberMe,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _rememberMe = value!;
-                                        });
-                                      },
-                                    ),
-                                    const Text(
-                                      "Ingat saya",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 0),
-
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    child: const Text(
-                                      "Lupa Kata Sandi?",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black87,
-                                      ),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Selamat Datang Kembali",
+                                    style: TextStyle(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                ),
-
-                                const SizedBox(height: 5),
-
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 45,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF4FA057),
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      elevation: 0,
-                                    ),
-                                    onPressed: () {},
-                                    child: const Text(
-                                      "Masuk",
-                                      style: TextStyle(fontSize: 14),
+                                  const SizedBox(height: 4),
+                                  const Text(
+                                    "Masuk untuk mulai aksi lingkunganmu",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black87,
                                     ),
                                   ),
-                                ),
+                                  const SizedBox(height: 30),
 
-                                const SizedBox(height: 20),
+                                  /// EMAIL
+                                  _buildTextField(
+                                    controller: _emailController,
+                                    hint: "Email",
+                                    icon: Icons.email,
+                                  ),
 
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Divider(color: Colors.grey[300]),
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                      ),
-                                      child: Text(
-                                        "atau",
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Divider(color: Colors.grey[300]),
-                                    ),
-                                  ],
-                                ),
+                                  const SizedBox(height: 15),
 
-                                const SizedBox(height: 20),
+                                  /// PASSWORD
+                                  _buildPasswordField(),
 
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 45,
-                                  child: OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _rememberMe,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _rememberMe = value!;
+                                          });
+                                        },
                                       ),
-                                      side: BorderSide(
-                                        color: Colors.grey.shade300,
-                                      ),
-                                    ),
-                                    onPressed: () {},
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/icon-gg.png',
-                                          height: 18,
+                                      const Text(
+                                        "Ingat saya",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black87,
                                         ),
-                                        const SizedBox(width: 8),
-                                        const Text(
-                                          "Masuk dengan akun Google",
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.black87,
+                                      ),
+                                    ],
+                                  ),
+
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                      onPressed: () {},
+                                      child: const Text(
+                                        "Lupa Kata Sandi?",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 5),
+
+                                  /// BUTTON MASUK
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 45,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(
+                                          0xFF4FA057,
+                                        ),
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            50,
                                           ),
                                         ),
-                                      ],
+                                        elevation: 0,
+                                      ),
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          print("Login valid");
+                                        }
+                                      },
+                                      child: const Text(
+                                        "Masuk",
+                                        style: TextStyle(fontSize: 14),
+                                      ),
                                     ),
                                   ),
-                                ),
 
-                                const SizedBox(height: 20),
+                                  const SizedBox(height: 20),
 
-                                Center(
-                                  child: Text.rich(
-                                    TextSpan(
-                                      text: "Belum punya akun? ",
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Divider(color: Colors.grey[300]),
                                       ),
-                                      children: [
-                                        WidgetSpan(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      const RegisterScreen(),
+                                      const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                        ),
+                                        child: Text(
+                                          "atau",
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Divider(color: Colors.grey[300]),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 45,
+                                    child: OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        side: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                      onPressed: () {},
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/icon-gg.png',
+                                            height: 18,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Text(
+                                            "Masuk dengan akun Google",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  Center(
+                                    child: Text.rich(
+                                      TextSpan(
+                                        text: "Belum punya akun? ",
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                        children: [
+                                          WidgetSpan(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        const RegisterScreen(),
+                                                  ),
+                                                );
+                                              },
+                                              child: const Text(
+                                                "Daftar Sekarang",
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(0xFF5B6CF6),
+                                                  fontWeight: FontWeight.w500,
                                                 ),
-                                              );
-                                            },
-                                            child: const Text(
-                                              "Daftar Sekarang",
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xFF5B6CF6),
-                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
 
-                      // IMAGE KARAKTER (SAMA)
                       Positioned(
                         top: 10,
                         left: 0,
@@ -282,9 +287,18 @@ class _LoginScreenState extends State<LoginScreen> {
     required String hint,
     required IconData icon,
   }) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       style: const TextStyle(color: Colors.black, fontSize: 13),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "$hint wajib diisi";
+        }
+        if (hint == "Email" && !value.contains("@")) {
+          return "Format email tidak valid";
+        }
+        return null;
+      },
       decoration: InputDecoration(
         prefixIcon: Icon(icon, size: 18, color: Colors.grey),
         hintText: hint,
@@ -301,10 +315,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildPasswordField() {
-    return TextField(
+    return TextFormField(
       controller: _passwordController,
       obscureText: _obscurePassword,
       style: const TextStyle(color: Colors.black, fontSize: 13),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Kata sandi wajib diisi";
+        }
+        if (value.length < 6) {
+          return "Minimal 6 karakter";
+        }
+        return null;
+      },
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.lock, size: 18, color: Colors.grey),
         suffixIcon: IconButton(
