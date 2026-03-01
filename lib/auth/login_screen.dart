@@ -2,7 +2,6 @@ import 'package:eduvogreen/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/gestures.dart';
-import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -70,7 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
 
               Container(
-                color: const Color.fromARGB(255, 15, 178, 85).withOpacity(0.85),
+                color: const Color.fromARGB(
+                  255,
+                  15,
+                  178,
+                  85,
+                ).withValues(alpha: 0.85),
               ),
 
               SafeArea(
