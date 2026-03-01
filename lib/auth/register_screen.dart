@@ -1,3 +1,4 @@
+import 'package:eduvogreen/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -235,24 +236,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               const SizedBox(height: 20),
 
-                              const Center(
-                                child: Text.rich(
-                                  TextSpan(
-                                    text: "Sudah punya akun? ",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
+                              Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Sudah punya akun? ",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
                                     ),
-                                    children: [
-                                      TextSpan(
-                                        text: "Masuk Sekarang",
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          '/login',
+                                        );
+                                      },
+                                      child: const Text(
+                                        "Masuk Sekarang",
                                         style: TextStyle(
+                                          fontSize: 12,
                                           color: Color(0xFF5B6CF6),
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],

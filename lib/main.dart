@@ -1,7 +1,10 @@
 import 'package:eduvogreen/auth/login_screen.dart';
+import 'package:eduvogreen/auth/register_screen.dart';
 import 'package:eduvogreen/core/supabase_client.dart';
-import 'package:eduvogreen/onboarding_screen.dart';
+import 'package:eduvogreen/cubit/auth_cubit.dart';
+import 'package:eduvogreen/home/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -15,10 +18,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EduVoGreen',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: LoginScreen(),
+    return BlocProvider(
+      create: (_) => AuthCubit(),
+      child: MaterialApp(
+        title: 'EduVoGreen',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1DAA51)),
+        ),
+        initialRoute: '/login',
+        routes: {
+          '/login': (_) => const LoginScreen(),
+          '/register': (_) => const RegisterScreen(),
+          '/home': (_) => const HomeScreen(),
+        },
+      ),
     );
   }
 }
