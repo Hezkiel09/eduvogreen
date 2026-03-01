@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/models/user_model.dart';
 part 'auth_state.dart';
 
-// Cubit
+// Cubitt
 class AuthCubit extends Cubit<AuthState> {
   final SupabaseClient supabase = Supabase.instance.client;
 
