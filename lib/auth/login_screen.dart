@@ -145,9 +145,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         elevation: 0,
                                       ),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          print("Login valid");
+                                          try {
+                                            await AuthService().logIn(
+                                              email: _emailController.text
+                                                  .trim(),
+                                              password: _passwordController.text
+                                                  .trim(),
+                                            );
+
+                                            if (!mounted) return;
+                                            Navigator.pushReplacementNamed(
+                                              context,
+                                              '/home',
+                                            );
+                                          } catch (e) {
+                                            if (!mounted) return;
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Login gagal: $e',
+                                                ),
+                                              ),
+                                            );
+                                          }
                                         }
                                       },
                                       child: const Text(
