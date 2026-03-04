@@ -16,10 +16,15 @@ class AuthService {
 
   // === Register ===
   Future<AuthResponse> signUp({
+    required String name,
     required String email,
     required String password,
   }) async {
-    return await _supabaseClient.auth.signUp(email: email, password: password);
+    return await _supabaseClient.auth.signUp(
+      email: email,
+      password: password,
+      data: {'name': name},
+    );
   }
 
   // ===Log Out===

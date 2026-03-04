@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'register_password_screen.dart';
+import 'auth_service.dart'; // <-- Ditambahkan supaya bisa pakai AuthService
+import 'package:flutter/gestures.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -15,6 +17,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _passwordController =
+      TextEditingController(); // <-- Ditambahkan field password
+
+  bool _isLoading = false; // <-- Ditambahkan untuk menampilkan loading
 
   Future<void> _selectDate() async {
     DateTime? pickedDate = await showDatePicker(
@@ -36,17 +42,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _dateController.dispose();
+    _passwordController.dispose(); // <-- Dispose password controller
     super.dispose();
   }
 
-  // TEXT FIELD
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
     required IconData icon,
+    bool isPassword = false, // <-- Ditambahkan untuk password field
   }) {
     return TextFormField(
       controller: controller,
+      obscureText: isPassword, // <-- Gunakan untuk password
       style: const TextStyle(color: Colors.black, fontSize: 13),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -54,6 +62,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
         if (hint == "Email" && !value.contains("@")) {
           return "Format email tidak valid";
+        }
+        if (isPassword && value.length < 6) {
+          return "Minimal 6 karakter"; // <-- Validasi password
         }
         return null;
       },
@@ -72,7 +83,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // DATE FIELD
   Widget _buildDateField() {
     return TextFormField(
       controller: _dateController,
@@ -104,6 +114,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  // =========================
+  // === Ditambahkan method register ===
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    setState(() => _isLoading = true);
+
+    try {
+      final authService = AuthService();
+      final response = await authService.signUp(
+        name: name,
+        email: email,
+        password: password,
+      );
+
+      setState(() => _isLoading = false);
+
+      if (response.user != null) {
+        // registrasi sukses → navigasi ke login
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registrasi berhasil, silakan login')),
+        );
+        Navigator.pushReplacementNamed(
+          context,
+          '/login',
+        ); // <-- Navigasi ke login
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Registrasi gagal')));
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+  // =========================
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +173,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
-
                 Expanded(
                   child: Stack(
                     children: [
@@ -174,10 +227,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   const SizedBox(height: 15),
 
+                                  _buildTextField(
+                                    controller: _passwordController,
+                                    hint: "Kata Sandi",
+                                    icon: Icons.lock,
+                                    isPassword:
+                                        true, // <-- Tambahkan ini untuk password
+                                  ),
+                                  const SizedBox(height: 15),
+
                                   _buildDateField(),
                                   const SizedBox(height: 30),
 
-                                  // BUTTON
+                                  // BUTTON REGISTER
                                   SizedBox(
                                     width: double.infinity,
                                     height: 45,
@@ -194,101 +256,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ),
                                         elevation: 0,
                                       ),
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const RegisterPasswordScreen(),
+                                      onPressed: _isLoading
+                                          ? null
+                                          : _register, // <-- Panggil method register
+                                      child: _isLoading
+                                          ? const CircularProgressIndicator(
+                                              color: Colors.white,
+                                            )
+                                          : const Text(
+                                              "Berikutnya",
+                                              style: TextStyle(fontSize: 14),
                                             ),
-                                          );
-                                        }
-                                      },
-                                      child: const Text(
-                                        "Berikutnya",
-                                        style: TextStyle(fontSize: 14),
-                                      ),
                                     ),
                                   ),
 
                                   const SizedBox(height: 20),
 
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Divider(color: Colors.grey[300]),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                        ),
-                                        child: Text(
-                                          "atau",
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Divider(color: Colors.grey[300]),
-                                      ),
-                                    ],
-                                  ),
-
-                                  const SizedBox(height: 20),
-
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 45,
-                                    child: OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        side: BorderSide(
-                                          color: Colors.grey.shade300,
-                                        ),
-                                      ),
-                                      onPressed: () {},
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            'assets/icon-gg.png',
-                                            height: 18,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          const Text(
-                                            "Daftar dengan akun Google",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 20),
-
-                                  const Center(
+                                  Center(
                                     child: Text.rich(
                                       TextSpan(
                                         text: "Sudah punya akun? ",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,
                                         ),
                                         children: [
                                           TextSpan(
                                             text: "Masuk Sekarang",
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: Color(0xFF5B6CF6),
                                               fontWeight: FontWeight.w500,
                                             ),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  '/login',
+                                                ); // <-- Navigasi ke login
+                                              },
                                           ),
                                         ],
                                       ),
