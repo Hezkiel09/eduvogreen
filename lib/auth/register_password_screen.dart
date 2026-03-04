@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'auth_service.dart';
 
 class RegisterPasswordScreen extends StatefulWidget {
-  const RegisterPasswordScreen({super.key});
+  final String email;
+  const RegisterPasswordScreen({super.key, required this.email});
 
   @override
   State<RegisterPasswordScreen> createState() => _RegisterPasswordScreenState();
@@ -9,7 +12,7 @@ class RegisterPasswordScreen extends StatefulWidget {
 
 class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  final supabase = Supabase.instance.client;
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
@@ -285,19 +288,49 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                         ),
                                         elevation: 0,
                                       ),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         if (_formKey.currentState!.validate() &&
                                             _isChecked) {
-                                          // Kirim ke backend / Supabase
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                "Akun berhasil dibuat",
+                                          try {
+                                            // IMPORTANT: pastikan Supabase sudah initialize di main.dart
+                                            // Signup ke Supabase beneran
+                                            await Supabase.instance.client.auth
+                                                .signUp(
+                                                  email: widget.email
+                                                      .trim()
+                                                      .toLowerCase(),
+                                                  password:
+                                                      _passwordController.text,
+                                                );
+
+                                            if (!mounted) return;
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  "Akun berhasil dibuat",
+                                                ),
                                               ),
-                                            ),
-                                          );
+                                            );
+
+                                            Navigator.pushReplacementNamed(
+                                              context,
+                                              '/login',
+                                            );
+                                          } catch (e) {
+                                            if (!mounted) return;
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  "Signup gagal: $e",
+                                                ),
+                                              ),
+                                            );
+                                          }
                                         } else if (!_isChecked) {
                                           ScaffoldMessenger.of(
                                             context,

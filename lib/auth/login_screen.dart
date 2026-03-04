@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
 import 'register_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  final supabase = Supabase.instance.client;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -145,9 +146,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         elevation: 0,
                                       ),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          print("Login valid");
+                                          try {
+                                            await AuthService().logIn(
+                                              email: _emailController.text
+                                                  .trim(),
+                                              password: _passwordController.text
+                                                  .trim(),
+                                            );
+
+                                            if (!mounted) return;
+                                            Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              '/home',
+                                              (route) => false,
+                                            );
+                                          } catch (e) {
+                                            if (!mounted) return;
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Login gagal: $e',
+                                                ),
+                                              ),
+                                            );
+                                          }
                                         }
                                       },
                                       child: const Text(

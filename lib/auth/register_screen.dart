@@ -1,7 +1,9 @@
-import 'package:eduvogreen/cubit/auth_cubit.dart';
+//import 'package:eduvogreen/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'register_password_screen.dart';
+import 'package:flutter/gestures.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -12,7 +14,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  final supabase = Supabase.instance.client;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
@@ -201,7 +203,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (_) =>
-                                                  const RegisterPasswordScreen(),
+                                                  RegisterPasswordScreen(
+                                                    email:
+                                                        _emailController.text,
+                                                  ),
                                             ),
                                           );
                                         }
@@ -275,7 +280,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                                   const SizedBox(height: 20),
 
-                                  const Center(
+                                  Center(
                                     child: Text.rich(
                                       TextSpan(
                                         text: "Sudah punya akun? ",
@@ -290,6 +295,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               color: Color(0xFF5B6CF6),
                                               fontWeight: FontWeight.w500,
                                             ),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  '/login',
+                                                );
+                                              },
                                           ),
                                         ],
                                       ),
