@@ -1,19 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../auth/auth_service.dart';
 import '../data/models/user_model.dart';
 part 'auth_state.dart';
 
-// Cubit
 class AuthCubit extends Cubit<AuthState> {
-  final SupabaseClient supabase = Supabase.instance.client;
+  final AuthService _authService;
 
-  AuthCubit() : super(Initial());
+  AuthCubit({AuthService? authService})
+    : _authService = authService ?? AuthService(),
+      super(Initial());
 
   // Login dengan email & password
   Future<void> login(String email, String password) async {
     emit(Loading());
     try {
-      final response = await supabase.auth.signInWithPassword(
+      final response = await _authService.logIn(
         email: email,
         password: password,
       );
@@ -44,10 +45,10 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> register(String name, String email, String password) async {
     emit(Loading());
     try {
-      final response = await supabase.auth.signUp(
+      final response = await _authService.signUp(
+        name: name,
         email: email,
         password: password,
-        data: {'name': name},
       );
 
       final user = response.user;
@@ -74,9 +75,12 @@ class AuthCubit extends Cubit<AuthState> {
 
   // Sign Out
   Future<void> signOut() async {
-    await supabase.auth.signOut();
+    await _authService.signOut();
     emit(LoggedOut());
   }
+
+  // Current user
+  dynamic get currentUser => _authService.curentUser;
 
   void resetPassword() {}
   void updatePassword() {}
