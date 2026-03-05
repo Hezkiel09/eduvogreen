@@ -347,8 +347,11 @@ class _LoginScreenState extends State<LoginScreen> {
         if (value == null || value.isEmpty) {
           return "Kata sandi wajib diisi";
         }
-        if (value.length < 6) {
-          return "Minimal 6 karakter";
+        if (value.length < 8 ||
+            !RegExp(r'[A-Za-z]').hasMatch(value) ||
+            !RegExp(r'[0-9]').hasMatch(value) ||
+            !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+          return "Minimal 8 karakter, kombinasi huruf, angka & simbol";
         }
         return null;
       },

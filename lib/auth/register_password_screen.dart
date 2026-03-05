@@ -138,7 +138,14 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                       if (value == null || value.isEmpty) {
                                         return "Kata Sandi wajib diisi";
                                       }
-                                      if (!isStrongPassword(value)) {
+                                      if (value.length < 8 ||
+                                          !RegExp(
+                                            r'[A-Za-z]',
+                                          ).hasMatch(value) ||
+                                          !RegExp(r'[0-9]').hasMatch(value) ||
+                                          !RegExp(
+                                            r'[!@#$%^&*(),.?":{}|<>]',
+                                          ).hasMatch(value)) {
                                         return "Minimal 8 karakter, kombinasi huruf, angka & simbol";
                                       }
                                       return null;

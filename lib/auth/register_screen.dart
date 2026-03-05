@@ -63,8 +63,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (hint == "Email" && !value.contains("@")) {
           return "Format email tidak valid";
         }
-        if (isPassword && value.length < 6) {
-          return "Minimal 6 karakter"; // <-- Validasi password
+        if (isPassword && value.length < 8) {
+          return "Minimal 8 karakter, kombinasi huruf, angka & simbol"; // <-- Validasi password
         }
         return null;
       },
@@ -114,7 +114,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // =========================
   // === Ditambahkan method register ===
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
@@ -156,7 +155,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
-  // =========================
 
   @override
   Widget build(BuildContext context) {
