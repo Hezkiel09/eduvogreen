@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'register_password_screen.dart';
 import 'auth_service.dart'; // <-- Ditambahkan supaya bisa pakai AuthService
@@ -63,8 +64,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (hint == "Email" && !value.contains("@")) {
           return "Format email tidak valid";
         }
-        if (isPassword && value.length < 6) {
-          return "Minimal 6 karakter"; // <-- Validasi password
+        if (isPassword && value.length < 8) {
+          return "Minimal 8 karakter, kombinasi huruf, angka & simbol"; // <-- Validasi password
         }
         return null;
       },
@@ -114,7 +115,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // =========================
   // === Ditambahkan method register ===
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
@@ -156,7 +156,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
-  // =========================
 
   @override
   Widget build(BuildContext context) {
@@ -231,15 +230,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     controller: _passwordController,
                                     hint: "Kata Sandi",
                                     icon: Icons.lock,
-                                    isPassword:
-                                        true, // <-- Tambahkan ini untuk password
+                                    isPassword: true,
                                   ),
                                   const SizedBox(height: 15),
 
                                   _buildDateField(),
                                   const SizedBox(height: 30),
 
-                                  // BUTTON REGISTER
                                   SizedBox(
                                     width: double.infinity,
                                     height: 45,
@@ -256,9 +253,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ),
                                         elevation: 0,
                                       ),
-                                      onPressed: _isLoading
-                                          ? null
-                                          : _register, // <-- Panggil method register
+                                      onPressed: _isLoading ? null : _register,
                                       child: _isLoading
                                           ? const CircularProgressIndicator(
                                               color: Colors.white,
@@ -292,7 +287,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 Navigator.pushReplacementNamed(
                                                   context,
                                                   '/login',
-                                                ); // <-- Navigasi ke login
+                                                );
                                               },
                                           ),
                                         ],

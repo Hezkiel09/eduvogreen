@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
 import 'register_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  final supabase = Supabase.instance.client;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -347,8 +348,11 @@ class _LoginScreenState extends State<LoginScreen> {
         if (value == null || value.isEmpty) {
           return "Kata sandi wajib diisi";
         }
-        if (value.length < 6) {
-          return "Minimal 6 karakter";
+        if (value.length < 8 ||
+            !RegExp(r'[A-Za-z]').hasMatch(value) ||
+            !RegExp(r'[0-9]').hasMatch(value) ||
+            !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+          return "Minimal 8 karakter, kombinasi huruf, angka & simbol";
         }
         return null;
       },
