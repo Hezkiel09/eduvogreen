@@ -157,9 +157,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                             );
 
                                             if (!mounted) return;
-                                            Navigator.pushReplacementNamed(
+                                            Navigator.pushNamedAndRemoveUntil(
                                               context,
                                               '/home',
+                                              (route) => false,
                                             );
                                           } catch (e) {
                                             if (!mounted) return;

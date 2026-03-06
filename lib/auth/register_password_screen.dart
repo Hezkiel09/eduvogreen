@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'auth_service.dart';
 import 'minat.dart';
 
 class RegisterPasswordScreen extends StatefulWidget {
   final String email;
-  const RegisterPasswordScreen({super.key, required this.email});
+  final String fullName;
+  final String birthDate;
+  const RegisterPasswordScreen({
+    super.key,
+    required this.email,
+    required this.fullName,
+    required this.birthDate,
+  });
 
   @override
   State<RegisterPasswordScreen> createState() => _RegisterPasswordScreenState();
@@ -300,8 +306,6 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                         if (_formKey.currentState!.validate() &&
                                             _isChecked) {
                                           try {
-                                            // IMPORTANT: pastikan Supabase sudah initialize di main.dart
-                                            // Signup ke Supabase beneran
                                             await Supabase.instance.client.auth
                                                 .signUp(
                                                   email: widget.email
@@ -309,6 +313,14 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                                       .toLowerCase(),
                                                   password:
                                                       _passwordController.text,
+                                                  data: {
+                                                    'name': widget.fullName,
+                                                    'full_name':
+                                                        widget.fullName,
+                                                    'username':
+                                                        _usernameController.text
+                                                            .trim(),
+                                                  },
                                                 );
 
                                             if (!mounted) return;

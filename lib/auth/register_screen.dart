@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'register_password_screen.dart';
 import 'package:flutter/gestures.dart';
+import 'register_password_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,7 +16,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -40,6 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _dateController.dispose();
+
     super.dispose();
   }
 
@@ -58,6 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (hint == "Email" && !value.contains("@")) {
           return "Format email tidak valid";
         }
+
         return null;
       },
       decoration: InputDecoration(
@@ -106,6 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  // =========================
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: 198,
+                        top: 155,
                         left: 0,
                         right: 0,
                         bottom: 0,
@@ -202,7 +204,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             MaterialPageRoute(
                                               builder: (_) =>
                                                   RegisterPasswordScreen(
+                                                    fullName: _nameController
+                                                        .text
+                                                        .trim(),
                                                     email: _emailController.text
+                                                        .trim(),
+                                                    birthDate: _dateController
+                                                        .text
                                                         .trim(),
                                                   ),
                                             ),
@@ -215,7 +223,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                     ),
                                   ),
-
                                   const SizedBox(height: 20),
 
                                   Center(
@@ -253,7 +260,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
 
                       Positioned(
-                        top: 47,
+                        top: 10,
                         left: 0,
                         right: 0,
                         child: Center(
