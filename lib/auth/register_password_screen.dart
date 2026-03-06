@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'auth_service.dart';
+import 'minat.dart';
 
 class RegisterPasswordScreen extends StatefulWidget {
   final String email;
@@ -58,7 +59,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: 155,
+                        top: 198,
                         left: 0,
                         right: 0,
                         bottom: 0,
@@ -365,7 +366,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
 
                       // IMAGE KARAKTER
                       Positioned(
-                        top: 10,
+                        top: 47,
                         left: 0,
                         right: 0,
                         child: Center(

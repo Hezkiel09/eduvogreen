@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: 155,
+                        top: 198,
                         left: 0,
                         right: 0,
                         bottom: 0,
@@ -286,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
 
                       Positioned(
-                        top: 10,
+                        top: 47,
                         left: 0,
                         right: 0,
                         child: Center(

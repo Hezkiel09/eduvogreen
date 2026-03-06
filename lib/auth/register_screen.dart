@@ -176,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: 155,
+                        top: 198,
                         left: 0,
                         right: 0,
                         bottom: 0,
@@ -223,14 +223,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     controller: _emailController,
                                     hint: "Email",
                                     icon: Icons.email,
-                                  ),
-                                  const SizedBox(height: 15),
-
-                                  _buildTextField(
-                                    controller: _passwordController,
-                                    hint: "Kata Sandi",
-                                    icon: Icons.lock,
-                                    isPassword: true,
                                   ),
                                   const SizedBox(height: 15),
 
@@ -302,7 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
 
                       Positioned(
-                        top: 10,
+                        top: 47,
                         left: 0,
                         right: 0,
                         child: Center(
