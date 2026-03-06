@@ -1,4 +1,5 @@
 import 'package:eduvogreen/auth/login_screen.dart';
+import 'package:eduvogreen/auth/minat.dart';
 import 'package:eduvogreen/auth/register_screen.dart';
 import 'package:eduvogreen/core/supabase_client.dart';
 import 'package:eduvogreen/cubit/auth_cubit.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
+        '/minat': (context) => const MinatScreen(),
       },
     );
   }

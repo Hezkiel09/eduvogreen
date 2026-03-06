@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'register_password_screen.dart';
-import 'auth_service.dart'; // <-- Ditambahkan supaya bisa pakai AuthService
 import 'package:flutter/gestures.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -18,10 +16,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController(); // <-- Ditambahkan field password
+  final TextEditingController _passwordController = TextEditingController();
 
-  bool _isLoading = false; // <-- Ditambahkan untuk menampilkan loading
+  bool _isLoading = false;
 
   Future<void> _selectDate() async {
     DateTime? pickedDate = await showDatePicker(
@@ -43,7 +40,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _dateController.dispose();
-    _passwordController.dispose(); // <-- Dispose password controller
     super.dispose();
   }
 
@@ -51,11 +47,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required TextEditingController controller,
     required String hint,
     required IconData icon,
-    bool isPassword = false, // <-- Ditambahkan untuk password field
   }) {
     return TextFormField(
       controller: controller,
-      obscureText: isPassword, // <-- Gunakan untuk password
       style: const TextStyle(color: Colors.black, fontSize: 13),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -63,9 +57,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
         if (hint == "Email" && !value.contains("@")) {
           return "Format email tidak valid";
-        }
-        if (isPassword && value.length < 8) {
-          return "Minimal 8 karakter, kombinasi huruf, angka & simbol"; // <-- Validasi password
         }
         return null;
       },
@@ -115,47 +106,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // === Ditambahkan method register ===
-  Future<void> _register() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-
-    setState(() => _isLoading = true);
-
-    try {
-      final authService = AuthService();
-      final response = await authService.signUp(
-        name: name,
-        email: email,
-        password: password,
-      );
-
-      setState(() => _isLoading = false);
-
-      if (response.user != null) {
-        // registrasi sukses → navigasi ke login
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registrasi berhasil, silakan login')),
-        );
-        Navigator.pushReplacementNamed(
-          context,
-          '/login',
-        ); // <-- Navigasi ke login
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Registrasi gagal')));
-      }
-    } catch (e) {
-      setState(() => _isLoading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,15 +195,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ),
                                         elevation: 0,
                                       ),
-                                      onPressed: _isLoading ? null : _register,
-                                      child: _isLoading
-                                          ? const CircularProgressIndicator(
-                                              color: Colors.white,
-                                            )
-                                          : const Text(
-                                              "Berikutnya",
-                                              style: TextStyle(fontSize: 14),
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  RegisterPasswordScreen(
+                                                    email: _emailController.text
+                                                        .trim(),
+                                                  ),
                                             ),
+                                          );
+                                        }
+                                      },
+                                      child: const Text(
+                                        "Berikutnya",
+                                        style: TextStyle(fontSize: 14),
+                                      ),
                                     ),
                                   ),
 
