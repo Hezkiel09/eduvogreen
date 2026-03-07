@@ -10,6 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // data dummy volunteers
     final volunteers = [
       {
         'title': 'Penanaman 100 Pohon Mangrove',
@@ -29,6 +30,7 @@ class HomeScreen extends StatelessWidget {
       },
     ];
 
+    // dummy article
     final articles = [
       {
         'title': 'Dampak Pemanasan Global terhadap Perubahan Cuaca',
@@ -82,17 +84,69 @@ class HomeScreen extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                SizedBox(
-                  height: 230,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    scrollDirection: Axis.horizontal,
+                  SizedBox(
+                    height: 230,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: volunteers.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        final item = volunteers[index];
+                        return VolunteerCard(
+                          title: item['title']!,
+                          location: item['location']!,
+                          date: item['date']!,
+                          imageAsset: item['image']!,
+                          tag: item['tag']!,
+                          participants: item['participants']!,
+                        );
+                      },
+                    ),
                   ),
-                )
 
+                  const SizedBox(height: 20),
+
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Artikel Hari ini',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF4A044E),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: articles.length,
+
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+
+                    itemBuilder: (context, index) {
+                      final item = articles[index];
+                      return ArticleCard(
+                        title: item['title']!,
+                        date: item['date']!,
+                        author: item['author']!,
+                        imageAsset: item['image']!,
+                        tag: item['tag']!,
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
+
+            //const HomeBottomNav(curentIndex: 0),
           ],
         ),
       ),
