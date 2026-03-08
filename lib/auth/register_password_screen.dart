@@ -47,9 +47,6 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
             child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
 
-          // OVERLAY
-          Container(color: const Color(0xFF4FA057).withOpacity(0.9)),
-
           SafeArea(
             bottom: false,
             child: Column(
@@ -286,7 +283,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: const Color(
-                                          0xFF4FA057,
+                                          0xFF706BFF,
                                         ),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
