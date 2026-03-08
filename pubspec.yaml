@@ -65,7 +65,10 @@ flutter:
     - assets/diatas-hijau.png
     - assets/karakter-manusia.png
     - assets/icon-gg.png
-  #   - images/a_dot_ham.jpeg
+    - assets/BG.png
+    - assets/profile_default.jpg
+    - assets/minat.png
+    - assets/riser_badge_silver.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -37,6 +37,12 @@ class ArticleCard extends StatelessWidget {
               width: 90,
               height: 90,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 90,
+                height: 90,
+                color: Colors.grey.shade200,
+                child: const Icon(Icons.image, color: Colors.grey, size: 32),
+              ),
             ),
           ),
           const SizedBox(width: 12),

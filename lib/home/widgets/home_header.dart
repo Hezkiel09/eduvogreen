@@ -65,7 +65,7 @@ class HomeHeader extends StatelessWidget {
               const Text(
                 'Temukan aksi favoritmu!',
                 style: TextStyle(
-                  color: Color(0xFACC15),
+                  color: Color(0xFFFACC15),
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   height: 1.1,

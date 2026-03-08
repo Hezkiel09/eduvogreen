@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   const HomeHeader(
                     userName: 'Joko',
-                    avatarAsset: 'assets/profile.jpg',
+                    avatarAsset: 'assets/profile_default.jpg',
                   ),
 
                   Padding(
@@ -146,7 +146,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            //const HomeBottomNav(curentIndex: 0),
+            const HomeBottomNav(currentIndex: 0),
           ],
         ),
       ),

@@ -37,12 +37,33 @@ class VolunteerCard extends StatelessWidget {
                 borderRadius: const BorderRadiusGeometry.vertical(
                   top: Radius.circular(16),
                 ),
-                child: Image.asset(
-                  imageAsset,
-                  height: 120,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                child: imageAsset.isEmpty
+                    ? Container(
+                        height: 120,
+                        width: double.infinity,
+                        color: Colors.grey.shade200,
+                        child: const Icon(
+                          Icons.image,
+                          color: Colors.grey,
+                          size: 40,
+                        ),
+                      )
+                    : Image.asset(
+                        imageAsset,
+                        height: 120,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: 120,
+                          width: double.infinity,
+                          color: Colors.grey.shade200,
+                          child: const Icon(
+                            Icons.image,
+                            color: Colors.grey,
+                            size: 40,
+                          ),
+                        ),
+                      ),
               ),
               Positioned(
                 top: 10,

@@ -148,6 +148,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
+                                          final navigator = Navigator.of(
+                                            context,
+                                          );
+                                          final messenger =
+                                              ScaffoldMessenger.of(context);
                                           try {
                                             await AuthService().logIn(
                                               email: _emailController.text
@@ -157,16 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                             );
 
                                             if (!mounted) return;
-                                            Navigator.pushNamedAndRemoveUntil(
-                                              context,
+                                            navigator.pushNamedAndRemoveUntil(
                                               '/home',
                                               (route) => false,
                                             );
                                           } catch (e) {
                                             if (!mounted) return;
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
+                                            messenger.showSnackBar(
                                               SnackBar(
                                                 content: Text(
                                                   'Login gagal: $e',

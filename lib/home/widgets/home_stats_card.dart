@@ -48,7 +48,12 @@ class HomeStatsCard extends StatelessWidget {
                       color: Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.mic, color: Colors.grey),
+                    child: Image.asset(
+                      'assets/riser_badge_silver.png',
+                      width: 44,
+                      height: 44,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   const SizedBox(width: 10),
 
