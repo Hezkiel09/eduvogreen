@@ -1,260 +1,186 @@
 import 'package:flutter/material.dart';
-import 'models/article_model.dart';
 import 'widgets/article_list_card.dart';
-import 'article_detail_screen.dart';
-import 'add_article_screen.dart';
-import '../home/widgets/home_bottom_nav.dart';
 
-class EduHubScreen extends StatefulWidget {
+class EduHubScreen extends StatelessWidget {
   const EduHubScreen({super.key});
 
   @override
-  State<EduHubScreen> createState() => _EduHubScreenState();
-}
-
-class _EduHubScreenState extends State<EduHubScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  String _selectedCategory = 'Semua';
-  String _searchQuery = '';
-
-  final List<String> _categories = [
-    'Semua',
-    'Climate Action',
-    'Sampah',
-    'Energi Terbarukan',
-    'Reboisasi',
-  ];
-
-  List<ArticleModel> get _filteredArticles {
-    return dummyArticles.where((a) {
-      final matchCategory =
-          _selectedCategory == 'Semua' || a.category == _selectedCategory;
-      final matchSearch =
-          _searchQuery.isEmpty ||
-          a.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          a.category.toLowerCase().contains(_searchQuery.toLowerCase());
-      return matchCategory && matchSearch;
-    }).toList();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final articles = [
+      {
+        'category': 'Reboisasi',
+        'title': 'Mengembalikan Napas Pesisir: Peran Mangrove Menahan Abrasi',
+        'preview':
+            'Ekosistem mangrove menjadi benteng utama pertahanan daratan dari ancaman krisis iklim.',
+        'author': 'Antonio Ngarusolo',
+        'date': '3 Maret 2026',
+        'image': 'assets/article1.jpg',
+      },
+      {
+        'category': 'Pengelolaan sampah 3R',
+        'title': 'Memulai Gaya Hidup Zero Waste dengan Prinsip 3R di Rumah',
+        'preview':
+            'Kurangi jejak karbon dengan mulai menerapkan prinsip 3R dalam rutinitas harian.',
+        'author': 'Admin',
+        'date': '3 Maret 2026',
+        'image': 'assets/article2.jpg',
+      },
+    ];
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F4F4),
+      backgroundColor: const Color(0xFFF5F5F5),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF148A43),
+        onPressed: () {
+          Navigator.pushNamed(context, '/add-article');
+        },
+        child: const Icon(Icons.add, color: Colors.white, size: 30),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 1,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFF148A43),
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: const TextStyle(fontSize: 12),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book_outlined),
+            activeIcon: Icon(Icons.menu_book),
+            label: 'EduHub',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.volunteer_activism_outlined),
+            activeIcon: Icon(Icons.volunteer_activism),
+            label: 'Volunteer',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profil',
+          ),
+        ],
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.pushReplacementNamed(context, '/home');
+          } else if (index == 1) {
+            // lagi di eduhub, jadi ga ngapa-ngapain
+          } else if (index == 2) {
+            Navigator.pushReplacementNamed(context, '/volunteer');
+          } else if (index == 3) {
+            Navigator.pushReplacementNamed(context, '/profile');
+          }
+        },
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            // ── HEADER ──────────────────────────────────────────
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+              padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
               decoration: const BoxDecoration(
-                color: Color(0xFF148A43),
+                image: DecorationImage(
+                  image: AssetImage('assets/home-bg.jpg'),
+                  fit: BoxFit.cover,
+                ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(26),
                   bottomRight: Radius.circular(26),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Judul
-                  const Text(
-                    'Edukasi',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.22),
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Edukasi',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Pelajari dan pahami wawasan\ntentang lingkungan!',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
-                      height: 1.4,
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Pelajari dan pahami wawasan\ntentang lingkungan!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white,
+                        height: 1.35,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Search Bar
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: (val) => setState(() => _searchQuery = val),
-                      style: const TextStyle(fontSize: 13),
-                      decoration: InputDecoration(
-                        hintText: 'Cari artikel atau topik yang sesuai...',
-                        hintStyle: const TextStyle(
-                          fontSize: 13,
-                          color: Colors.black38,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          size: 20,
-                          color: Colors.black38,
-                        ),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  size: 18,
-                                  color: Colors.black38,
-                                ),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 14,
+                    const SizedBox(height: 14),
+                    Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                      ),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          hintText:
+                              'Cari artikel atau topik yang sesuai dengan minat mu!',
+                          hintStyle: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black45,
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.black45,
+                            size: 20,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 12),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-
-            // ── FILTER KATEGORI ──────────────────────────────────
-            SizedBox(
-              height: 52,
+            const SizedBox(height: 14),
+            Expanded(
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
-                ),
-                scrollDirection: Axis.horizontal,
-                itemCount: _categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: articles.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 14),
                 itemBuilder: (context, index) {
-                  final cat = _categories[index];
-                  final isSelected = cat == _selectedCategory;
+                  final item = articles[index];
                   return GestureDetector(
-                    onTap: () => setState(() => _selectedCategory = cat),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFF148A43)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: isSelected
-                              ? const Color(0xFF148A43)
-                              : Colors.grey.shade300,
-                        ),
-                        boxShadow: isSelected
-                            ? [
-                                BoxShadow(
-                                  color: const Color(
-                                    0xFF148A43,
-                                  ).withValues(alpha: 0.25),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ]
-                            : [],
-                      ),
-                      child: Text(
-                        cat,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : Colors.black54,
-                        ),
-                      ),
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/article-detail',
+                        arguments: item,
+                      );
+                    },
+                    child: ArticleListCard(
+                      category: item['category']!,
+                      title: item['title']!,
+                      preview: item['preview']!,
+                      author: item['author']!,
+                      date: item['date']!,
+                      imageAsset: item['image']!,
                     ),
                   );
                 },
               ),
             ),
-
-            // ── DAFTAR ARTIKEL ───────────────────────────────────
-            Expanded(
-              child: _filteredArticles.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.search_off,
-                            size: 64,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Artikel tidak ditemukan',
-                            style: TextStyle(
-                              color: Colors.grey.shade400,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.only(top: 4, bottom: 16),
-                      itemCount: _filteredArticles.length,
-                      itemBuilder: (context, index) {
-                        final article = _filteredArticles[index];
-                        return ArticleListCard(
-                          article: article,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    ArticleDetailScreen(article: article),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-            ),
-
-            // ── BOTTOM NAV ───────────────────────────────────────
-            const HomeBottomNav(currentIndex: 1),
           ],
         ),
-      ),
-
-      // ── FAB TAMBAH ARTIKEL ───────────────────────────────────
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AddArticleScreen()),
-          );
-        },
-        backgroundColor: const Color(0xFF148A43),
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
     );
   }

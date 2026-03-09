@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'models/article_model.dart';
+import '../models/article_model.dart';
 
 class ArticleDetailScreen extends StatefulWidget {
   final ArticleModel article;
