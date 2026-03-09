@@ -13,7 +13,7 @@ class _MinatScreenState extends State<MinatScreen> {
     "Pelatihan relawan",
     "Pengelolaan sampah 3R",
     "Peserta edukasi/kampanye",
-    "Konservasi dan reboisasi",
+    "Konservasi Lingkungan",
     "Kampanye lingkungan",
     "Pemberian edukasi",
     "Aksi membersihkan lingkungan",
