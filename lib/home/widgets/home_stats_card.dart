@@ -7,7 +7,7 @@ class HomeStatsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // tinggi card statistik
-      height: 88,
+      height: 96,
 
       // styling card
       decoration: BoxDecoration(
@@ -114,7 +114,7 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
