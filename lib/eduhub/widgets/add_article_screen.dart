@@ -159,7 +159,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          'Tambah Artikel',
+          'Ajukan Artikel',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
         leading: IconButton(
@@ -464,7 +464,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                   elevation: 0,
                 ),
                 child: const Text(
-                  'Kirim untuk Direview',
+                  'Ajukan Artikel',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ),

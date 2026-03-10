@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../home/widgets/home_bottom_nav.dart';
 import 'widgets/article_list_card.dart';
 
 class EduHubScreen extends StatelessWidget {
@@ -15,6 +16,8 @@ class EduHubScreen extends StatelessWidget {
         'author': 'Antonio Ngarusolo',
         'date': '3 Maret 2026',
         'image': 'assets/article1.jpg',
+        'content':
+            'Indonesia, sebagai negara kepulauan terbesar di dunia dengan garis pantai mencapai lebih dari 99.000 kilometer, kini berdiri di garis depan menghadapi ancaman krisis iklim. Peningkatan suhu bumi telah memicu pelelehan es di kutub secara masif, yang berdampak langsung pada kenaikan permukaan air laut secara global. Garis pantai yang terus tergerus ombak bukan lagi sekadar ancaman di atas kertas, melainkan realitas pahit yang sedang terjadi.\n\nFenomena abrasi ini tidak hanya mengancam pemukiman warga pesisir yang terpaksa mundur setiap tahunnya, tetapi juga merusak infrastruktur vital, fasilitas umum, dan area tambak yang menjadi urat nadi perekonomian lokal. Di tengah krisis ekologis yang mendesak ini, ekosistem hutan mangrove hadir sebagai pahlawan tanpa tanda jasa—sebuah benteng pertahanan alami yang terbukti paling efektif, murah, dan berkelanjutan dibandingkan pembangunan tanggul beton buatan manusia.\n\nLebih dari Sekadar Sabuk Hijau\nBanyak yang mengira mangrove hanyalah kumpulan pohon yang tumbuh di lumpur. Padahal, anatomi tanaman ini adalah mahakarya evolusi.',
       },
       {
         'category': 'Pengelolaan sampah 3R',
@@ -24,11 +27,14 @@ class EduHubScreen extends StatelessWidget {
         'author': 'Admin',
         'date': '3 Maret 2026',
         'image': 'assets/article2.jpg',
+        'content':
+            'Prinsip 3R (Reduce, Reuse, Recycle) sangat penting diterapkan dalam kehidupan sehari-hari untuk meminimalisir sampah. Langkah kecil dari rumah bisa memberikan dampak besar bagi kelestarian lingkungan kita bersama.',
       },
     ];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF148A43),
         onPressed: () {
@@ -36,50 +42,8 @@ class EduHubScreen extends StatelessWidget {
         },
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF148A43),
-        unselectedItemColor: Colors.grey,
-        selectedLabelStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
-        unselectedLabelStyle: const TextStyle(fontSize: 12),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book_outlined),
-            activeIcon: Icon(Icons.menu_book),
-            label: 'EduHub',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.volunteer_activism_outlined),
-            activeIcon: Icon(Icons.volunteer_activism),
-            label: 'Volunteer',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacementNamed(context, '/home');
-          } else if (index == 1) {
-            // lagi di eduhub, jadi ga ngapa-ngapain
-          } else if (index == 2) {
-            Navigator.pushReplacementNamed(context, '/volunteer');
-          } else if (index == 3) {
-            Navigator.pushReplacementNamed(context, '/profile');
-          }
-        },
-      ),
+
+      bottomNavigationBar: const HomeBottomNav(currentIndex: 1),
       body: SafeArea(
         child: Column(
           children: [
@@ -88,7 +52,7 @@ class EduHubScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/home-bg.jpg'),
+                  image: AssetImage('assets/BG.png'),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.only(
@@ -123,11 +87,15 @@ class EduHubScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 14),
+
+                    // DIUBAH: search bar sedikit dirapiin spacing & radius-nya tetap
                     Container(
-                      height: 44,
+                      height: 46, // DIUBAH: dari 44 -> 46 biar lebih lega
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
+                        borderRadius: BorderRadius.circular(
+                          24,
+                        ), // DIUBAH: 22 -> 24
                       ),
                       child: const TextField(
                         decoration: InputDecoration(
@@ -143,7 +111,9 @@ class EduHubScreen extends StatelessWidget {
                             size: 20,
                           ),
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 13,
+                          ), // DIUBAH: 12 -> 13
                         ),
                       ),
                     ),
@@ -151,10 +121,18 @@ class EduHubScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             const SizedBox(height: 14),
+
             Expanded(
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                // DIUBAH: padding bawah ditambah supaya item terakhir tidak ketabrak FAB/navbar
+                padding: const EdgeInsets.fromLTRB(
+                  16,
+                  0,
+                  16,
+                  100,
+                ), // DIUBAH: sebelumnya horizontal only
                 itemCount: articles.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 14),
                 itemBuilder: (context, index) {

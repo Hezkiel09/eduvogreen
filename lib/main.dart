@@ -3,9 +3,11 @@ import 'package:eduvogreen/auth/minat.dart';
 import 'package:eduvogreen/auth/register_screen.dart';
 import 'package:eduvogreen/core/supabase_client.dart';
 import 'package:eduvogreen/eduhub/eduhub_screen.dart';
+import 'package:eduvogreen/eduhub/widgets/article_detail_screen.dart';
 import 'package:eduvogreen/home/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:eduvogreen/eduhub/eduhub_screen.dart';
+import 'package:eduvogreen/eduhub/widgets/article_detail_screen.dart';
+import 'package:eduvogreen/eduhub/widgets/add_article_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: '/login',
+      initialRoute: '/home',
 
       routes: {
         '/login': (context) => const LoginScreen(),
@@ -31,10 +33,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/minat': (context) => const MinatScreen(),
         '/eduhub': (context) => const EduHubScreen(),
-        '/article-detail': (context) =>
-            const Scaffold(body: Center(child: Text('Article Detail'))),
-        '/add-article': (context) =>
-            const Scaffold(body: Center(child: Text('Add Article'))),
+        '/article-detail': (context) => const ArticleDetailScreen(),
+        '/add-article': (context) => const AddArticleScreen(),
         '/volunteer': (context) =>
             const Scaffold(body: Center(child: Text('Volunteer'))),
         '/profile': (context) =>
