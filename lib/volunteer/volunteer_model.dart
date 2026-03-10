@@ -9,10 +9,17 @@ class VolunteerEvent {
   final String organizer;
   final String organizerLogo;
   final String description;
+
   int currentParticipants;
   final int maxParticipants;
+
   final List<String> criteria;
+  final List<String> benefits;
+
   final bool isOpen;
+
+  bool isRegistered;
+  bool isSaved;
 
   VolunteerEvent({
     required this.title,
@@ -28,7 +35,10 @@ class VolunteerEvent {
     required this.currentParticipants,
     required this.maxParticipants,
     required this.criteria,
+    required this.benefits,
     required this.isOpen,
+    this.isRegistered = false,
+    this.isSaved = false,
   });
 
   double get progress => currentParticipants / maxParticipants;

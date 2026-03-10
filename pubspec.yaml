@@ -31,6 +31,7 @@ dependencies:
   intl: ^0.18.1
   flutter:
     sdk: flutter
+  image_picker: ^1.0.7
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -74,6 +75,9 @@ flutter:
     - assets/event3.png
     - assets/event4.png
     - assets/event5.png
+    - assets/badge1.png
+    - assets/logo_eduvogreen.png
+    - assets/hint.png
 
   #   - images/a_dot_ham.jpeg
 

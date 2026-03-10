@@ -12,6 +12,10 @@ class VolunteerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isClosed = !event.isOpen;
+    bool isRegistered = event.isRegistered;
+    bool buttonDisabled = isClosed || isRegistered;
+
     return GestureDetector(
       onTap: () async {
         await Navigator.push(
@@ -132,24 +136,30 @@ class VolunteerCard extends StatelessWidget {
 
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xff2E7D32),
+                          backgroundColor: buttonDisabled
+                              ? Colors.grey
+                              : const Color(0xff2E7D32),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),
                         ),
-                        child: const Text("Daftar"),
-                        onPressed: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  VolunteerDetailScreen(event: event),
-                            ),
-                          );
 
-                          onUpdate();
-                        },
+                        onPressed: buttonDisabled
+                            ? null
+                            : () async {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        VolunteerDetailScreen(event: event),
+                                  ),
+                                );
+
+                                onUpdate();
+                              },
+
+                        child: Text(isRegistered ? "Terdaftar" : "Daftar"),
                       ),
                     ],
                   ),

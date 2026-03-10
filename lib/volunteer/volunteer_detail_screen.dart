@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'volunteer_model.dart';
 import 'widgets/event_tag.dart';
 import 'widgets/progress_participants.dart';
+import 'widgets/reward_popup.dart';
+import 'report_page.dart';
 
 class VolunteerDetailScreen extends StatefulWidget {
   final VolunteerEvent event;
@@ -13,20 +15,76 @@ class VolunteerDetailScreen extends StatefulWidget {
 }
 
 class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
-  void daftar() {
-    if (widget.event.currentParticipants < widget.event.maxParticipants) {
-      setState(() {
-        widget.event.currentParticipants++;
-      });
-    }
+  Future<void> showLoading() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image(
+                image: AssetImage("assets/logo_eduvogreen.png"),
+                width: 100,
+              ),
+              SizedBox(height: 20),
+              CircularProgressIndicator(color: Color(0xff2E7D32)),
+            ],
+          ),
+        );
+      },
+    );
+
+    await Future.delayed(const Duration(seconds: 2));
+    Navigator.pop(context);
+  }
+
+  Future<void> showRewardPopup() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const RewardPopup();
+      },
+    );
+  }
+
+  void daftar() async {
+    if (!widget.event.isOpen) return;
+
+    if (widget.event.isRegistered) return;
+
+    if (widget.event.currentParticipants >= widget.event.maxParticipants)
+      return;
+
+    await showLoading();
+
+    setState(() {
+      widget.event.currentParticipants++;
+      widget.event.isRegistered = true;
+    });
+
+    await showRewardPopup();
   }
 
   @override
+  void toggleSave() {
+    setState(() {
+      widget.event.isSaved = !widget.event.isSaved;
+    });
+  }
+
   Widget build(BuildContext context) {
     final event = widget.event;
 
+    bool isClosed = !event.isOpen;
+    bool isRegistered = event.isRegistered;
+
+    bool buttonDisabled = isClosed || isRegistered;
+
     return Scaffold(
       backgroundColor: Colors.white,
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,10 +105,8 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
                     child: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: Color(0xff2E7D32),
-                      ),
+                      icon: const Icon(Icons.arrow_back),
+                      color: Color(0xff2E7D32),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -157,65 +213,79 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
 
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
 
                   Text(event.description),
-                  const SizedBox(height: 25),
+
+                  const SizedBox(height: 20),
 
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                        ),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 6),
                       ],
                     ),
+
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // HEADER
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(14),
                           decoration: const BoxDecoration(
                             color: Color(0xff2E7D32),
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
                             ),
                           ),
+
                           child: const Text(
                             "Kriteria Peserta",
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
                             ),
                           ),
                         ),
 
-                        // ISI
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                              bottom: Radius.circular(16),
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(16),
+                        Padding(
+                          padding: const EdgeInsets.all(14),
 
                           child: Column(
                             children: List.generate(event.criteria.length, (
                               index,
                             ) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 8),
+
+                                padding: const EdgeInsets.all(10),
+
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("${index + 1}. "),
+                                    CircleAvatar(
+                                      radius: 12,
+                                      backgroundColor: const Color(0xff2E7D32),
+                                      child: Text(
+                                        "${index + 1}",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+
+                                    const SizedBox(width: 10),
 
                                     Expanded(
                                       child: Text(event.criteria[index]),
@@ -229,7 +299,82 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16),
 
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black12, blurRadius: 6),
+                      ],
+                    ),
+
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          decoration: const BoxDecoration(
+                            color: Color(0xff2E7D32),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                            ),
+                          ),
+
+                          child: const Text(
+                            "Benefit",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.all(14),
+
+                          child: Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+
+                            children: event.benefits.map((benefit) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.grey.shade400,
+                                  ),
+                                ),
+
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      size: 16,
+                                      color: Color(0xff2E7D32),
+                                    ),
+
+                                    const SizedBox(width: 6),
+
+                                    Text(benefit),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 90),
                 ],
               ),
@@ -240,25 +385,47 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
 
       bottomNavigationBar: Container(
         color: Colors.white,
+
         padding: const EdgeInsets.all(16),
 
         child: Column(
           mainAxisSize: MainAxisSize.min,
+
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.flag),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ReportPage()),
+                    );
+                  },
+
+                  icon: const Icon(Icons.error_outline, color: Colors.red),
+
                   label: const Text("Lapor"),
                 ),
 
                 const SizedBox(width: 10),
 
-                OutlinedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.bookmark_border),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: widget.event.isSaved
+                        ? const Color(0xff2E7D32)
+                        : Colors.white,
+                    foregroundColor: Colors.black,
+                    side: const BorderSide(color: Colors.grey),
+                  ),
+
+                  onPressed: toggleSave,
+
+                  icon: Icon(
+                    Icons.bookmark,
+                    color: widget.event.isSaved ? Colors.yellow : Colors.grey,
+                  ),
+
                   label: const Text("Simpan"),
                 ),
               ],
@@ -268,16 +435,24 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
 
             SizedBox(
               width: double.infinity,
+
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: event.isOpen
-                      ? const Color(0xff2E7D32)
-                      : Colors.grey,
+                  backgroundColor: buttonDisabled
+                      ? Colors.grey
+                      : const Color(0xff2E7D32),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                onPressed: event.isOpen ? daftar : null,
+
+                onPressed: buttonDisabled ? null : daftar,
+
                 child: Text(
-                  event.isOpen ? "Daftar Sekarang" : "Pendaftaran Belum Dibuka",
+                  isRegistered
+                      ? "Sudah Terdaftar"
+                      : isClosed
+                      ? "Pendaftaran Belum Dibuka"
+                      : "Daftar Sekarang",
+
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

@@ -33,8 +33,18 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
       maxParticipants: 50,
       criteria: [
         "Terbuka untuk umum (minimal usia 13 tahun)",
-        "Sehat jasmani",
-        "Bersedia bekerja di luar ruangan",
+        "Sehat jasmani dan rohani",
+        "Bersedia mengikuti kegiatan hingga selesai",
+        "Membawa topi & botol minum pribadi",
+      ],
+
+      benefits: [
+        "Sertifikat partisipasi",
+        "Edukasi",
+        "Snack & air mineral",
+        "Dokumentasi",
+        "Pengalaman",
+        "Kaos & merch",
       ],
       isOpen: true,
     ),
@@ -58,6 +68,15 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Menyukai kegiatan alam",
         "Bersedia bekerja dalam tim",
       ],
+
+      benefits: [
+        "Sertifikat partisipasi",
+        "Edukasi",
+        "Snack & air mineral",
+        "Dokumentasi",
+        "Pengalaman",
+        "Kaos & merch",
+      ],
       isOpen: true,
     ),
 
@@ -80,6 +99,15 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Suka mengajar anak-anak",
         "Minimal usia 18 tahun",
       ],
+
+      benefits: [
+        "Sertifikat partisipasi",
+        "Edukasi",
+        "Snack & air mineral",
+        "Dokumentasi",
+        "Pengalaman",
+        "Kaos & merch",
+      ],
       isOpen: true,
     ),
 
@@ -94,8 +122,8 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
       organizer: "PMI",
       organizerLogo: "assets/org4.png",
       description:
-          "Kegiatan relawan kesehatan lingkungan bekerja sama dengan tim dari Korea Selatan" 
-          "untuk meningkatkan kesadaran tentang pentingnya menjaga kebersihan lingkungan" 
+          "Kegiatan relawan kesehatan lingkungan bekerja sama dengan tim dari Korea Selatan"
+          "untuk meningkatkan kesadaran tentang pentingnya menjaga kebersihan lingkungan"
           "dan mencegah penyakit yang ditularkan melalui lingkungan.",
       currentParticipants: 0,
       maxParticipants: 100,
@@ -105,6 +133,15 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Tidak memiliki riwayat penyakit tertentu",
         "Bersedia mengikuti pelatihan kesehatan lingkungan",
         "Bersedia bekerja di luar ruangan",
+      ],
+
+      benefits: [
+        "Sertifikat partisipasi",
+        "Edukasi",
+        "Snack & air mineral",
+        "Dokumentasi",
+        "Pengalaman",
+        "Kaos & merch",
       ],
       isOpen: false,
     ),
@@ -127,6 +164,15 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Siap bekerja di lapangan",
         "Bersedia mengikuti arahan tim",
         "Bersedia bekerja dalam kondisi basah dan kotor",
+      ],
+
+      benefits: [
+        "Sertifikat partisipasi",
+        "Edukasi",
+        "Snack & air mineral",
+        "Dokumentasi",
+        "Pengalaman",
+        "Kaos & merch",
       ],
       isOpen: false,
     ),
