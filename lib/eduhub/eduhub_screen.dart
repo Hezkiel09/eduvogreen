@@ -88,32 +88,39 @@ class EduHubScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
 
-                    // DIUBAH: search bar sedikit dirapiin spacing & radius-nya tetap
+                    // search bar
                     Container(
-                      height: 46, // DIUBAH: dari 44 -> 46 biar lebih lega
+                      height: 44,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(
-                          24,
-                        ), // DIUBAH: 22 -> 24
+                        borderRadius: BorderRadius.circular(24),
                       ),
                       child: const TextField(
+                        textAlignVertical: TextAlignVertical.center,
+                        style: TextStyle(fontSize: 12, color: Colors.black87),
                         decoration: InputDecoration(
                           hintText:
-                              'Cari artikel atau topik yang sesuai dengan minat mu!',
+                              'Cari artikel atau topik yang sesuai dengan minatmu!',
                           hintStyle: TextStyle(
                             fontSize: 12,
-                            color: Colors.black45,
+                            color: Colors.black38,
                           ),
-                          prefixIcon: Icon(
+                          // prefixIcon: Icon(
+                          //   Icons.search,
+                          //   color: Colors.black45,
+                          //   size: 20,
+                          // ),
+                          suffixIcon: Icon(
                             Icons.search,
                             color: Colors.black45,
-                            size: 20,
+                            size: 18,
                           ),
                           border: InputBorder.none,
+                          isDense: true,
                           contentPadding: EdgeInsets.symmetric(
-                            vertical: 13,
-                          ), // DIUBAH: 12 -> 13
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
                         ),
                       ),
                     ),

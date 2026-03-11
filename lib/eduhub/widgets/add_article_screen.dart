@@ -12,7 +12,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
 
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
-  final _tagController = TextEditingController();
+  //final _tagController = TextEditingController();
   final _referenceController = TextEditingController();
 
   String _selectedCategory = 'Climate Action';
@@ -46,24 +46,24 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
   void dispose() {
     _titleController.dispose();
     _contentController.dispose();
-    _tagController.dispose();
+    //  _tagController.dispose();
     _referenceController.dispose();
     super.dispose();
   }
 
-  void _addTag() {
-    final tag = _tagController.text.trim();
-    if (tag.isEmpty) return;
-    if (_tags.length >= 5) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Maksimal 5 tag')));
-      return;
-    }
-    if (_tags.contains(tag)) return;
-    setState(() => _tags.add(tag));
-    _tagController.clear();
-  }
+  // void _addTag() {
+  //   final tag = _tagController.text.trim();
+  //   if (tag.isEmpty) return;
+  //   if (_tags.length >= 5) {
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(const SnackBar(content: Text('Maksimal 5 tag')));
+  //     return;
+  //   }
+  //   if (_tags.contains(tag)) return;
+  //   setState(() => _tags.add(tag));
+  //   _tagController.clear();
+  // }
 
   void _addReference() {
     final ref = _referenceController.text.trim();
@@ -206,36 +206,6 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
             const SizedBox(height: 14),
 
             // Tags
-            _buildLabel('Tag (Opsional, maks. 5)'),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _tagController,
-                    style: const TextStyle(fontSize: 13),
-                    decoration: _inputDecoration('Tambah tag...'),
-                    onSubmitted: (_) => _addTag(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _addTag,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF148A43),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                  ),
-                  child: const Text('+ Tambah'),
-                ),
-              ],
-            ),
             if (_tags.isNotEmpty) ...[
               const SizedBox(height: 10),
               Wrap(

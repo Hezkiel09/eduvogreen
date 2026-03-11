@@ -6,7 +6,7 @@ class HomeBottomNav extends StatelessWidget {
   const HomeBottomNav({super.key, required this.currentIndex});
 
   void _onTap(BuildContext context, int index) {
-    if (index == currentIndex) return; // sudah di halaman ini
+    if (index == currentIndex) return; 
     switch (index) {
       case 0:
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
@@ -15,6 +15,9 @@ class HomeBottomNav extends StatelessWidget {
         Navigator.pushNamedAndRemoveUntil(context, '/eduhub', (route) => false);
         break;
       // case 2: Volunteer — belum tersedia
+      case 2:
+        Navigator.pushNamedAndRemoveUntil(context, '/profile', (route) => false);
+        break;
       // case 3: Profil   — belum tersedia
     }
   }
@@ -22,6 +25,8 @@ class HomeBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      backgroundColor: Colors.white,
+      elevation: 8,
       currentIndex: currentIndex,
       onTap: (index) => _onTap(context, index),
       type: BottomNavigationBarType.fixed,

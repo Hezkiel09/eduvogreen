@@ -50,6 +50,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
+      bottomNavigationBar: const HomeBottomNav(currentIndex: 0),
       body: SafeArea(
         child: Column(
           children: [
@@ -141,12 +142,10 @@ class HomeScreen extends StatelessWidget {
                     },
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
-
-            const HomeBottomNav(currentIndex: 0),
           ],
         ),
       ),
