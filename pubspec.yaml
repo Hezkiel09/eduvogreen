@@ -71,6 +71,10 @@ flutter:
     - assets/BG.png
     - assets/event1.png
     - assets/org1.png
+    - assets/org2.png
+    - assets/org3.png
+    - assets/org4.png
+    - assets/org5.png
     - assets/event2.png
     - assets/event3.png
     - assets/event4.png
@@ -78,6 +82,12 @@ flutter:
     - assets/badge1.png
     - assets/logo_eduvogreen.png
     - assets/hint.png
+    - assets/icons/certificate.png
+    - assets/icons/education.png
+    - assets/icons/snack.png
+    - assets/icons/documentation.png
+    - assets/icons/experience.png
+    - assets/icons/shirt.png
 
   #   - images/a_dot_ham.jpeg
 

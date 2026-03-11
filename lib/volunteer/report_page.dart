@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:eduvogreen/volunteer/volunteer_model.dart';
 
 class ReportPage extends StatefulWidget {
-  const ReportPage({super.key});
+  final VolunteerEvent event;
+
+  const ReportPage({super.key, required this.event});
 
   @override
   State<ReportPage> createState() => _ReportPageState();
@@ -81,7 +84,7 @@ class _ReportPageState extends State<ReportPage> {
           context: context,
           builder: (_) {
             return Dialog(
-              backgroundColor: Colors.white, // BG dialog jadi putih
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -92,7 +95,6 @@ class _ReportPageState extends State<ReportPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    /// IMAGE ICON
                     Image.asset(
                       "assets/hint.png",
                       width: 178,
@@ -116,9 +118,7 @@ class _ReportPageState extends State<ReportPage> {
                     const Text(
                       "Ini akan secara otomatis menghapus semua progres pelaporan yang Anda buat!!",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(fontSize: 12),
                     ),
 
                     const SizedBox(height: 20),
@@ -169,6 +169,8 @@ class _ReportPageState extends State<ReportPage> {
 
   @override
   Widget build(BuildContext context) {
+    final event = widget.event;
+
     return WillPopScope(
       onWillPop: confirmExit,
 
@@ -211,7 +213,7 @@ class _ReportPageState extends State<ReportPage> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.asset(
-                        "assets/event1.png",
+                        event.image,
                         width: 70,
                         height: 70,
                         fit: BoxFit.cover,
@@ -220,20 +222,20 @@ class _ReportPageState extends State<ReportPage> {
 
                     const SizedBox(width: 12),
 
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Penanaman 100 Pohon Mangrove",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            event.title,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
 
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
 
                           Text(
-                            "Dinas Lingkungan Hidup Jakarta",
-                            style: TextStyle(color: Colors.grey),
+                            event.organizer,
+                            style: const TextStyle(color: Colors.grey),
                           ),
                         ],
                       ),
@@ -312,10 +314,7 @@ class _ReportPageState extends State<ReportPage> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.grey,
-                      style: BorderStyle.solid,
-                    ),
+                    border: Border.all(color: Colors.grey),
                   ),
 
                   child: imageFile == null

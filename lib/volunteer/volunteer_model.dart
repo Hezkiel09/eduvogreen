@@ -14,7 +14,7 @@ class VolunteerEvent {
   final int maxParticipants;
 
   final List<String> criteria;
-  final List<String> benefits;
+  final List<Benefit> benefits;
 
   final bool isOpen;
 
@@ -42,4 +42,14 @@ class VolunteerEvent {
   });
 
   double get progress => currentParticipants / maxParticipants;
+}
+
+class Benefit {
+  final String title;
+  final String icon;
+
+  Benefit({
+    required this.title,
+    required this.icon,
+  });
 }

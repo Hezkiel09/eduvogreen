@@ -357,15 +357,15 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(
-                                      Icons.star,
-                                      size: 16,
-                                      color: Color(0xff2E7D32),
+                                    Image.asset(
+                                      benefit.icon,
+                                      width: 18,
+                                      height: 18,
                                     ),
 
                                     const SizedBox(width: 6),
 
-                                    Text(benefit),
+                                    Text(benefit.title),
                                   ],
                                 ),
                               );
@@ -399,7 +399,9 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const ReportPage()),
+                      MaterialPageRoute(
+                        builder: (_) => ReportPage(event: event),
+                      ),
                     );
                   },
 
@@ -418,15 +420,17 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
                     foregroundColor: Colors.black,
                     side: const BorderSide(color: Colors.grey),
                   ),
-
                   onPressed: toggleSave,
-
                   icon: Icon(
                     Icons.bookmark,
                     color: widget.event.isSaved ? Colors.yellow : Colors.grey,
                   ),
-
-                  label: const Text("Simpan"),
+                  label: Text(
+                    "Simpan",
+                    style: TextStyle(
+                      color: widget.event.isSaved ? Colors.white : Colors.black,
+                    ),
+                  ),
                 ),
               ],
             ),
