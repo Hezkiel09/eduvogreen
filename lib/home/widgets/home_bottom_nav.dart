@@ -6,19 +6,32 @@ class HomeBottomNav extends StatelessWidget {
   const HomeBottomNav({super.key, required this.currentIndex});
 
   void _onTap(BuildContext context, int index) {
-    if (index == currentIndex) return; 
+    if (index == currentIndex) return;
     switch (index) {
       case 0:
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         break;
       case 1:
-        Navigator.pushNamedAndRemoveUntil(context, '/eduhub', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/eduhub',
+          ModalRoute.withName('/home'),
+        );
         break;
-      // case 2: Volunteer — belum tersedia
       case 2:
-        Navigator.pushNamedAndRemoveUntil(context, '/profile', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/volunteer',
+          ModalRoute.withName('/home'),
+        );
         break;
-      // case 3: Profil   — belum tersedia
+      case 3:
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/profile',
+          ModalRoute.withName('/home'),
+        );
+        break;
     }
   }
 

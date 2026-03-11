@@ -1,36 +1,28 @@
 import 'package:flutter/material.dart';
 import '../home/widgets/home_bottom_nav.dart';
 import 'widgets/article_list_card.dart';
+import 'services/article_service.dart';
+import 'models/article_model.dart';
 
-class EduHubScreen extends StatelessWidget {
+class EduHubScreen extends StatefulWidget {
   const EduHubScreen({super.key});
 
   @override
+  State<EduHubScreen> createState() => _EduHubScreenState();
+}
+
+class _EduHubScreenState extends State<EduHubScreen> {
+  final ArticleService _articleService = ArticleService();
+  late Future<List<ArticleModel>> _articlesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _articlesFuture = _articleService.getArticles();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final articles = [
-      {
-        'category': 'Reboisasi',
-        'title': 'Mengembalikan Napas Pesisir: Peran Mangrove Menahan Abrasi',
-        'preview':
-            'Ekosistem mangrove menjadi benteng utama pertahanan daratan dari ancaman krisis iklim.',
-        'author': 'Antonio Ngarusolo',
-        'date': '3 Maret 2026',
-        'image': 'assets/article1.jpg',
-        'content':
-            'Indonesia, sebagai negara kepulauan terbesar di dunia dengan garis pantai mencapai lebih dari 99.000 kilometer, kini berdiri di garis depan menghadapi ancaman krisis iklim. Peningkatan suhu bumi telah memicu pelelehan es di kutub secara masif, yang berdampak langsung pada kenaikan permukaan air laut secara global. Garis pantai yang terus tergerus ombak bukan lagi sekadar ancaman di atas kertas, melainkan realitas pahit yang sedang terjadi.\n\nFenomena abrasi ini tidak hanya mengancam pemukiman warga pesisir yang terpaksa mundur setiap tahunnya, tetapi juga merusak infrastruktur vital, fasilitas umum, dan area tambak yang menjadi urat nadi perekonomian lokal. Di tengah krisis ekologis yang mendesak ini, ekosistem hutan mangrove hadir sebagai pahlawan tanpa tanda jasa—sebuah benteng pertahanan alami yang terbukti paling efektif, murah, dan berkelanjutan dibandingkan pembangunan tanggul beton buatan manusia.\n\nLebih dari Sekadar Sabuk Hijau\nBanyak yang mengira mangrove hanyalah kumpulan pohon yang tumbuh di lumpur. Padahal, anatomi tanaman ini adalah mahakarya evolusi.',
-      },
-      {
-        'category': 'Pengelolaan sampah 3R',
-        'title': 'Memulai Gaya Hidup Zero Waste dengan Prinsip 3R di Rumah',
-        'preview':
-            'Kurangi jejak karbon dengan mulai menerapkan prinsip 3R dalam rutinitas harian.',
-        'author': 'Admin',
-        'date': '3 Maret 2026',
-        'image': 'assets/article2.jpg',
-        'content':
-            'Prinsip 3R (Reduce, Reuse, Recycle) sangat penting diterapkan dalam kehidupan sehari-hari untuk meminimalisir sampah. Langkah kecil dari rumah bisa memberikan dampak besar bagi kelestarian lingkungan kita bersama.',
-      },
-    ];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -132,34 +124,53 @@ class EduHubScreen extends StatelessWidget {
             const SizedBox(height: 14),
 
             Expanded(
-              child: ListView.separated(
-                // DIUBAH: padding bawah ditambah supaya item terakhir tidak ketabrak FAB/navbar
-                padding: const EdgeInsets.fromLTRB(
-                  16,
-                  0,
-                  16,
-                  100,
-                ), // DIUBAH: sebelumnya horizontal only
-                itemCount: articles.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 14),
-                itemBuilder: (context, index) {
-                  final item = articles[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/article-detail',
-                        arguments: item,
+              child: FutureBuilder<List<ArticleModel>>(
+                future: _articlesFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Color(0xFF148A43)),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Terjadi kesalahan: ${snapshot.error}'),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('Belum ada artikel yang tersedia.'),
+                    );
+                  }
+
+                  final articles = snapshot.data!;
+
+                  return ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                    itemCount: articles.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 14),
+                    itemBuilder: (context, index) {
+                      final item = articles[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/article-detail',
+                            arguments: item,
+                          );
+                        },
+                        child: ArticleListCard(
+                          category: item.category,
+                          title: item.title,
+                          preview: item.content.length > 100 
+                            ? '${item.content.substring(0, 100)}...' 
+                            : item.content,
+                          author: item.authorName,
+                          date: item.publishDate,
+                          imageAsset: item.thumbnail.isEmpty 
+                            ? 'assets/article1.jpg' // Default jika kosong dari DB
+                            : item.thumbnail, 
+                        ),
                       );
                     },
-                    child: ArticleListCard(
-                      category: item['category']!,
-                      title: item['title']!,
-                      preview: item['preview']!,
-                      author: item['author']!,
-                      date: item['date']!,
-                      imageAsset: item['image']!,
-                    ),
                   );
                 },
               ),

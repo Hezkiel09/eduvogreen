@@ -6,8 +6,8 @@ import 'package:eduvogreen/eduhub/eduhub_screen.dart';
 import 'package:eduvogreen/eduhub/widgets/article_detail_screen.dart';
 import 'package:eduvogreen/home/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:eduvogreen/eduhub/widgets/article_detail_screen.dart';
 import 'package:eduvogreen/eduhub/widgets/add_article_screen.dart';
+import 'package:eduvogreen/profile/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,8 +37,7 @@ class MyApp extends StatelessWidget {
         '/add-article': (context) => const AddArticleScreen(),
         '/volunteer': (context) =>
             const Scaffold(body: Center(child: Text('Volunteer'))),
-        '/profile': (context) =>
-            const Scaffold(body: Center(child: Text('Profile'))),
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }
