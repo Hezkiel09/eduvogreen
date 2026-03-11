@@ -88,6 +88,14 @@ flutter:
     - assets/icons/documentation.png
     - assets/icons/experience.png
     - assets/icons/shirt.png
+    - assets/icons/volup.png
+    - assets/icons/arpro.png
+    - assets/icons/latin.png
+    - assets/admin/header_admin.png
+    - assets/admin/tambahA.png
+    - assets/admin/tinjauA.png
+    - assets/admin/unggahA.png
+    - assets/admin/laporA.png
 
   #   - images/a_dot_ham.jpeg
 

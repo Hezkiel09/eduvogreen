@@ -1,34 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class RegisterPasswordScreen extends StatefulWidget {
-  final String email;
-
-  const RegisterPasswordScreen({super.key, required this.email});
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<RegisterPasswordScreen> createState() => _RegisterPasswordScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
-  bool _isChecked = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
-    _usernameController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
     super.dispose();
   }
 
-  /// UI TEXTFIELD SAMA DENGAN REGISTER SCREEN
+  /// UI TEXTFIELD SAMA DENGAN REGISTER
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
@@ -42,8 +39,8 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
       obscureText: obscure,
       validator: validator,
       style: const TextStyle(
-        color: Colors.black,
         fontSize: 13,
+        color: Colors.black,
       ),
       decoration: InputDecoration(
         prefixIcon: Icon(
@@ -68,34 +65,36 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
     );
   }
 
-  Future<void> _signUp() async {
+  Future<void> _updatePassword() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (!_isChecked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Kamu harus setuju dengan pernyataan")),
-      );
-      return;
-    }
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
-      await Supabase.instance.client.auth.signUp(
-        email: widget.email.trim(),
-        password: _passwordController.text.trim(),
+      await Supabase.instance.client.auth.updateUser(
+        UserAttributes(
+          password: _passwordController.text.trim(),
+        ),
       );
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Akun berhasil dibuat")),
+        const SnackBar(content: Text("Password berhasil diperbarui")),
       );
 
       Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Signup gagal: $e")),
+        SnackBar(content: Text("Terjadi kesalahan: $e")),
       );
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -103,6 +102,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          /// BACKGROUND
           SizedBox.expand(
             child: Image.asset(
               'assets/diatas-hijau.png',
@@ -115,9 +115,11 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
+
                 Expanded(
                   child: Stack(
                     children: [
+                      /// CARD PUTIH
                       Positioned(
                         top: 198,
                         left: 0,
@@ -139,7 +141,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
-                                    "Buat Akun EduvoGreen",
+                                    "Reset Kata Sandi",
                                     style: TextStyle(
                                       fontSize: 19,
                                       fontWeight: FontWeight.w600,
@@ -149,31 +151,16 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                   const SizedBox(height: 4),
 
                                   const Text(
-                                    "Mulai dari tahu, lanjutkan dengan aksi",
+                                    "Masukkan kata sandi baru",
                                     style: TextStyle(fontSize: 12),
                                   ),
 
                                   const SizedBox(height: 30),
 
-                                  /// USERNAME
-                                  _buildTextField(
-                                    controller: _usernameController,
-                                    hint: "Nama Pengguna",
-                                    icon: Icons.person,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "Nama Pengguna wajib diisi";
-                                      }
-                                      return null;
-                                    },
-                                  ),
-
-                                  const SizedBox(height: 15),
-
-                                  /// PASSWORD
+                                  /// PASSWORD BARU
                                   _buildTextField(
                                     controller: _passwordController,
-                                    hint: "Kata Sandi",
+                                    hint: "Password Baru",
                                     icon: Icons.lock,
                                     obscure: _obscurePassword,
                                     suffix: IconButton(
@@ -191,7 +178,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                     ),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return "Kata Sandi wajib diisi";
+                                        return "Password wajib diisi";
                                       }
                                       if (value.length < 8) {
                                         return "Minimal 8 karakter";
@@ -202,10 +189,10 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
 
                                   const SizedBox(height: 15),
 
-                                  /// CONFIRM PASSWORD
+                                  /// KONFIRM PASSWORD
                                   _buildTextField(
                                     controller: _confirmController,
-                                    hint: "Konfirmasi Kata Sandi",
+                                    hint: "Konfirmasi Password",
                                     icon: Icons.lock,
                                     obscure: _obscureConfirm,
                                     suffix: IconButton(
@@ -223,49 +210,34 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                     ),
                                     validator: (value) {
                                       if (value != _passwordController.text) {
-                                        return "Kata sandi tidak cocok";
+                                        return "Password tidak cocok";
                                       }
                                       return null;
                                     },
                                   ),
 
-                                  const SizedBox(height: 15),
-
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                        value: _isChecked,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _isChecked = value!;
-                                          });
-                                        },
-                                      ),
-                                      const Expanded(
-                                        child: Text(
-                                          "Saya setuju untuk mendukung keberlanjutan lingkungan",
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 30),
 
                                   SizedBox(
                                     width: double.infinity,
                                     height: 45,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF188C42),
+                                        backgroundColor:
+                                            const Color(0xFF188C42),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(50),
                                         ),
                                       ),
-                                      onPressed: _signUp,
-                                      child: const Text("Daftar"),
+                                      onPressed:
+                                          _isLoading ? null : _updatePassword,
+                                      child: _isLoading
+                                          ? const CircularProgressIndicator(
+                                              color: Colors.white,
+                                            )
+                                          : const Text("Update Password"),
                                     ),
                                   ),
                                 ],
@@ -275,6 +247,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                         ),
                       ),
 
+                      /// ILUSTRASI
                       Positioned(
                         top: 47,
                         left: 0,

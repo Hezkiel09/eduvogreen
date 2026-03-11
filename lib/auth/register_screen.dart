@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'register_password_screen.dart';
-import 'auth_service.dart'; // <-- Ditambahkan supaya bisa pakai AuthService
 import 'package:flutter/gestures.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -18,10 +16,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController(); // <-- Ditambahkan field password
-
-  bool _isLoading = false; // <-- Ditambahkan untuk menampilkan loading
 
   Future<void> _selectDate() async {
     DateTime? pickedDate = await showDatePicker(
@@ -43,7 +37,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _dateController.dispose();
-    _passwordController.dispose(); // <-- Dispose password controller
     super.dispose();
   }
 
@@ -51,11 +44,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required TextEditingController controller,
     required String hint,
     required IconData icon,
-    bool isPassword = false, // <-- Ditambahkan untuk password field
   }) {
     return TextFormField(
       controller: controller,
-      obscureText: isPassword, // <-- Gunakan untuk password
       style: const TextStyle(color: Colors.black, fontSize: 13),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -63,9 +54,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
         if (hint == "Email" && !value.contains("@")) {
           return "Format email tidak valid";
-        }
-        if (isPassword && value.length < 8) {
-          return "Minimal 8 karakter, kombinasi huruf, angka & simbol"; // <-- Validasi password
         }
         return null;
       },
@@ -97,11 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return null;
       },
       decoration: InputDecoration(
-        prefixIcon: const Icon(
-          Icons.calendar_today,
-          size: 18,
-          color: Colors.grey,
-        ),
+        prefixIcon: const Icon(Icons.calendar_today, size: 18, color: Colors.grey),
         hintText: "Tanggal Lahir",
         hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
         filled: true,
@@ -115,46 +99,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // === Ditambahkan method register ===
-  Future<void> _register() async {
+  void _goToPasswordScreen() {
     if (!_formKey.currentState!.validate()) return;
 
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-
-    setState(() => _isLoading = true);
-
-    try {
-      final authService = AuthService();
-      final response = await authService.signUp(
-        name: name,
-        email: email,
-        password: password,
-      );
-
-      setState(() => _isLoading = false);
-
-      if (response.user != null) {
-        // registrasi sukses → navigasi ke login
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registrasi berhasil, silakan login')),
-        );
-        Navigator.pushReplacementNamed(
-          context,
-          '/login',
-        ); // <-- Navigasi ke login
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Registrasi gagal')));
-      }
-    } catch (e) {
-      setState(() => _isLoading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegisterPasswordScreen(
+          email: _emailController.text.trim(),
+        ),
+      ),
+    );
   }
 
   @override
@@ -165,7 +120,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SizedBox.expand(
             child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
-
           SafeArea(
             bottom: false,
             child: Column(
@@ -204,10 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   const SizedBox(height: 4),
                                   const Text(
                                     "Mulai dari tahu, lanjutkan dengan aksi",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black87,
-                                    ),
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                   const SizedBox(height: 30),
 
@@ -216,6 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     hint: "Nama Lengkap",
                                     icon: Icons.person,
                                   ),
+
                                   const SizedBox(height: 15),
 
                                   _buildTextField(
@@ -223,9 +175,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     hint: "Email",
                                     icon: Icons.email,
                                   ),
+
                                   const SizedBox(height: 15),
 
                                   _buildDateField(),
+
                                   const SizedBox(height: 30),
 
                                   SizedBox(
@@ -233,26 +187,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     height: 45,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF188C42,
-                                        ),
+                                        backgroundColor: const Color(0xFF188C42),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            50,
-                                          ),
+                                          borderRadius: BorderRadius.circular(50),
                                         ),
                                         elevation: 0,
                                       ),
-                                      onPressed: _isLoading ? null : _register,
-                                      child: _isLoading
-                                          ? const CircularProgressIndicator(
-                                              color: Colors.white,
-                                            )
-                                          : const Text(
-                                              "Berikutnya",
-                                              style: TextStyle(fontSize: 14),
-                                            ),
+                                      onPressed: _goToPasswordScreen,
+                                      child: const Text(
+                                        "Berikutnya",
+                                        style: TextStyle(fontSize: 14),
+                                      ),
                                     ),
                                   ),
 
@@ -263,9 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       TextSpan(
                                         text: "Sudah punya akun? ",
                                         style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
+                                            fontSize: 12, color: Colors.grey),
                                         children: [
                                           TextSpan(
                                             text: "Masuk Sekarang",
@@ -276,9 +220,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () {
                                                 Navigator.pushReplacementNamed(
-                                                  context,
-                                                  '/login',
-                                                );
+                                                    context, '/login');
                                               },
                                           ),
                                         ],
@@ -291,7 +233,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
-
                       Positioned(
                         top: 47,
                         left: 0,
