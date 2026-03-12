@@ -12,10 +12,10 @@ class HomeBottomNav extends StatelessWidget {
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         break;
       case 1:
-        Navigator.pushNamed(context, '/eduhub');
+        Navigator.pushNamed(context, '/volunteer');
         break;
       case 2:
-        Navigator.pushNamed(context, '/volunteer');
+        Navigator.pushNamed(context, '/eduhub');
         break;
       case 3:
         Navigator.pushNamed(context, '/profile');
@@ -41,12 +41,12 @@ class HomeBottomNav extends StatelessWidget {
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.menu_book_outlined),
-          label: 'EduHub',
-        ),
-        BottomNavigationBarItem(
           icon: Icon(Icons.volunteer_activism_outlined),
           label: 'Volunteer',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.menu_book_outlined),
+          label: 'EduHub',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person_outline),

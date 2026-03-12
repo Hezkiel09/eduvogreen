@@ -23,7 +23,6 @@ class _EduHubScreenState extends State<EduHubScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
 
@@ -35,7 +34,7 @@ class _EduHubScreenState extends State<EduHubScreen> {
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
 
-      bottomNavigationBar: const HomeBottomNav(currentIndex: 1),
+      bottomNavigationBar: const HomeBottomNav(currentIndex: 2),
       body: SafeArea(
         child: Column(
           children: [
@@ -129,7 +128,9 @@ class _EduHubScreenState extends State<EduHubScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
-                      child: CircularProgressIndicator(color: Color(0xFF148A43)),
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF148A43),
+                      ),
                     );
                   } else if (snapshot.hasError) {
                     return Center(
@@ -160,14 +161,14 @@ class _EduHubScreenState extends State<EduHubScreen> {
                         child: ArticleListCard(
                           category: item.category,
                           title: item.title,
-                          preview: item.content.length > 100 
-                            ? '${item.content.substring(0, 100)}...' 
-                            : item.content,
+                          preview: item.content.length > 100
+                              ? '${item.content.substring(0, 100)}...'
+                              : item.content,
                           author: item.authorName,
                           date: item.publishDate,
-                          imageAsset: item.thumbnail.isEmpty 
-                            ? 'assets/article1.jpg' // Default jika kosong dari DB
-                            : item.thumbnail, 
+                          imageAsset: item.thumbnail.isEmpty
+                              ? 'assets/article1.jpg' // Default jika kosong dari DB
+                              : item.thumbnail,
                         ),
                       );
                     },
