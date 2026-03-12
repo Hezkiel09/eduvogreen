@@ -10,6 +10,7 @@ class ArticleModel {
   final String authorType; 
   final String publishDate;
   final int readTimeMinutes;
+  final String status;
   bool isBookmarked;
 
   ArticleModel({
@@ -24,6 +25,7 @@ class ArticleModel {
     required this.authorType,
     required this.publishDate,
     required this.readTimeMinutes,
+    this.status = 'pending',
     this.isBookmarked = false,
   });
 
@@ -40,6 +42,7 @@ class ArticleModel {
       authorType: json['author_type'] as String,
       publishDate: json['publish_date'] as String,
       readTimeMinutes: json['read_time_minutes'] as int,
+      status: json['status'] as String? ?? 'pending',
     );
   }
 
@@ -56,7 +59,7 @@ class ArticleModel {
       'author_type': authorType,
       'publish_date': publishDate,
       'read_time_minutes': readTimeMinutes,
-      // 'created_at'
+      'status': status,
     };
   }
 }

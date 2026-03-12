@@ -130,6 +130,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
       authorType: 'Kontributor Komunitas',
       publishDate: dateFormatted,
       readTimeMinutes: (_wordCount / 200).ceil(),
+      status: 'pending',
     );
 
     context.read<ArticleCubit>().submitArticle(newArticle);

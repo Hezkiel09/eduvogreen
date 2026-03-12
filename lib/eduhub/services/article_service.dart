@@ -11,6 +11,7 @@ class ArticleService {
       final response = await _supabase
           .from(_tableName)
           .select()
+          .eq('status', 'approved')
           .order('created_at', ascending: false);
 
       return (response as List<dynamic>)

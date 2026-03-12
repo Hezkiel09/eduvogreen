@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import '../models/article_model.dart';
 
-class ArticleDetailScreen extends StatelessWidget {
+class ArticleDetailScreen extends StatefulWidget {
   const ArticleDetailScreen({super.key});
+
+  @override
+  State<ArticleDetailScreen> createState() => _ArticleDetailScreenState();
+}
+
+class _ArticleDetailScreenState extends State<ArticleDetailScreen> {
+  bool _isSaved = false;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +25,22 @@ class ArticleDetailScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF148A43),
+        onPressed: () {
+          setState(() => _isSaved = !_isSaved);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_isSaved ? 'Artikel disimpan' : 'Artikel dihapus dari simpanan'),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        },
+        child: Icon(
+          _isSaved ? Icons.bookmark : Icons.bookmark_border,
+          color: Colors.white,
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -132,24 +155,7 @@ class ArticleDetailScreen extends StatelessWidget {
                           color: Colors.black54,
                         ),
                       ),
-                      const SizedBox(height: 14),
 
-                      TextButton.icon(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Artikel disimpan')),
-                          );
-                        },
-                        icon: const Icon(Icons.bookmark_border, size: 18),
-                        label: const Text('Save'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: const Color(0xFF148A43),
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-                      const Divider(),
-                      const SizedBox(height: 12),
 
                       Text(
                         articleContent,
