@@ -8,23 +8,32 @@ import 'tinjau_artikel_page.dart';
 import 'unggah_volunteer_page.dart';
 import 'laporan_masalah_page.dart';
 
-class AdminDashboardPage extends StatelessWidget {
+class AdminDashboardPage extends StatefulWidget {
   final String adminName;
 
   const AdminDashboardPage({super.key, this.adminName = "Admin"});
 
   @override
+  State<AdminDashboardPage> createState() => _AdminDashboardPageState();
+}
+
+class _AdminDashboardPageState extends State<AdminDashboardPage> {
+  int volunteerCount = 0;
+  int articleCount = 0;
+  int reportCount = 0;
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
-            /// HEADER
+            // Header
             Stack(
               clipBehavior: Clip.none,
               children: [
-                /// HEADER BACKGROUND
                 Container(
                   height: 220,
                   width: double.infinity,
@@ -40,7 +49,6 @@ class AdminDashboardPage extends StatelessWidget {
                   ),
                 ),
 
-                /// TEXT HEADER
                 Positioned(
                   top: 70,
                   left: 0,
@@ -48,13 +56,14 @@ class AdminDashboardPage extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        "Halo Admin! $adminName",
+                        "Halo Admin! ${widget.adminName}",
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+
                       const Text(
                         "EduvoGreen",
                         style: TextStyle(color: Colors.white, fontSize: 16),
@@ -63,26 +72,30 @@ class AdminDashboardPage extends StatelessWidget {
                   ),
                 ),
 
-                /// STAT CARD (MENIMPA HEADER)
+                // Stat Card
                 Positioned(
                   bottom: -60,
                   left: 10,
                   right: 10,
+
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+
+                    children: [
                       StatCard(
-                        number: "12",
+                        number: volunteerCount.toString().padLeft(2, '0'),
                         title: "Volunteer telah \ndiupload",
                         icon: "assets/icons/volup.png",
                       ),
+
                       StatCard(
-                        number: "08",
+                        number: articleCount.toString().padLeft(2, '0'),
                         title: "Artikel di \nProses",
                         icon: "assets/icons/arpro.png",
                       ),
+
                       StatCard(
-                        number: "07",
+                        number: reportCount.toString().padLeft(2, '0'),
                         title: "Laporan di \nTinjau",
                         icon: "assets/icons/latin.png",
                       ),
@@ -94,65 +107,88 @@ class AdminDashboardPage extends StatelessWidget {
 
             const SizedBox(height: 100),
 
-            /// MENU
+            // Menu
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
+
               child: GridView.count(
                 crossAxisCount: 2,
                 shrinkWrap: true,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
                 physics: const NeverScrollableScrollPhysics(),
+
                 children: [
                   MenuCard(
                     title: "Tambah Artikel",
                     image: "assets/admin/tambahA.png",
-                    onTap: () {
-                      Navigator.push(
+
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const TambahArtikelPage(),
+                          builder: (context) =>
+                              TambahArtikelPage(adminName: widget.adminName),
                         ),
                       );
+
+                      setState(() {
+                        articleCount++;
+                      });
                     },
                   ),
 
                   MenuCard(
                     title: "Tinjau Artikel User",
                     image: "assets/admin/tinjauA.png",
-                    onTap: () {
-                      Navigator.push(
+
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const TinjauArtikelPage(),
                         ),
                       );
+
+                      setState(() {
+                        articleCount++;
+                      });
                     },
                   ),
 
                   MenuCard(
                     title: "Unggah Volunteer",
                     image: "assets/admin/unggahA.png",
-                    onTap: () {
-                      Navigator.push(
+
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const UnggahVolunteerPage(),
                         ),
                       );
+
+                      setState(() {
+                        volunteerCount++;
+                      });
                     },
                   ),
 
                   MenuCard(
                     title: "Laporan Masalah",
                     image: "assets/admin/laporA.png",
-                    onTap: () {
-                      Navigator.push(
+
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const LaporanMasalahPage(),
                         ),
                       );
+
+                      setState(() {
+                        reportCount++;
+                      });
                     },
                   ),
                 ],
@@ -161,7 +197,7 @@ class AdminDashboardPage extends StatelessWidget {
 
             const SizedBox(height: 100),
 
-            /// FOOTER
+            // Footer
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
@@ -169,7 +205,9 @@ class AdminDashboardPage extends StatelessWidget {
                   image: AssetImage("assets/logo_eduvogreen.png"),
                   height: 35,
                 ),
+
                 SizedBox(width: 10),
+
                 Text(
                   "Copyright EduvoGreen 2026",
                   style: TextStyle(

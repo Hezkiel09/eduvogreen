@@ -85,7 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   const SizedBox(height: 30),
 
-                                  /// EMAIL
                                   _buildTextField(
                                     controller: _emailController,
                                     hint: "Email",
@@ -94,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                   const SizedBox(height: 15),
 
-                                  /// PASSWORD
                                   _buildPasswordField(),
 
                                   Row(
@@ -141,7 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                   const SizedBox(height: 5),
 
-                                  /// BUTTON MASUK
                                   SizedBox(
                                     width: double.infinity,
                                     height: 45,

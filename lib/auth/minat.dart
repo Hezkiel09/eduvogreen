@@ -128,7 +128,7 @@ class _MinatScreenState extends State<MinatScreen> {
               ),
             ),
 
-            // BUTTON SECTION
+            // Button Section
             Container(
               decoration: const BoxDecoration(
                 color: Colors.white,

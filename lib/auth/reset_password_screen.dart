@@ -25,7 +25,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     super.dispose();
   }
 
-  /// UI TEXTFIELD SAMA DENGAN REGISTER
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
@@ -102,7 +101,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          /// BACKGROUND
           SizedBox.expand(
             child: Image.asset(
               'assets/diatas-hijau.png',
@@ -119,7 +117,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 Expanded(
                   child: Stack(
                     children: [
-                      /// CARD PUTIH
                       Positioned(
                         top: 198,
                         left: 0,
@@ -157,7 +154,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                                   const SizedBox(height: 30),
 
-                                  /// PASSWORD BARU
                                   _buildTextField(
                                     controller: _passwordController,
                                     hint: "Password Baru",
@@ -189,7 +185,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                                   const SizedBox(height: 15),
 
-                                  /// KONFIRM PASSWORD
                                   _buildTextField(
                                     controller: _confirmController,
                                     hint: "Konfirmasi Password",
@@ -247,7 +242,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                       ),
 
-                      /// ILUSTRASI
                       Positioned(
                         top: 47,
                         left: 0,

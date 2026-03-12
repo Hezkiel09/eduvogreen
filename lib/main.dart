@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           fontFamily: GoogleFonts.montserrat().fontFamily,
         ),
 
-        /// HALAMAN PERTAMA
+        // Halaman pertama
         initialRoute: '/admin',
 
         routes: {
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
 
           '/reset_password': (context) => const ResetPasswordScreen(),
 
-          /// ADMIN DASHBOARD
+          // Admin dashboard
           '/admin': (context) => const AdminDashboardPage(
                 adminName: "Admin", // sementara dummy
               ),

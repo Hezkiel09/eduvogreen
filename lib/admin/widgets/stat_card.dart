@@ -33,7 +33,7 @@ class StatCard extends StatelessWidget {
         child: Stack(
           children: [
 
-            /// ICON POJOK KANAN ATAS
+            /// Icon pojok kanan atas
             Positioned(
               right: -20,
               top: -20,
@@ -43,7 +43,7 @@ class StatCard extends StatelessWidget {
               ),
             ),
 
-            /// CONTENT
+            /// Content
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -286,7 +286,9 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         unselectedItemColor: Colors.grey,
 
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home), 
+            label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: "EduHub"),
           BottomNavigationBarItem(
             icon: Icon(Icons.volunteer_activism),

@@ -28,7 +28,6 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
     super.dispose();
   }
 
-  /// UI TEXTFIELD SAMA DENGAN REGISTER SCREEN
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
@@ -155,7 +154,6 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
 
                                   const SizedBox(height: 30),
 
-                                  /// USERNAME
                                   _buildTextField(
                                     controller: _usernameController,
                                     hint: "Nama Pengguna",
@@ -170,7 +168,6 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
 
                                   const SizedBox(height: 15),
 
-                                  /// PASSWORD
                                   _buildTextField(
                                     controller: _passwordController,
                                     hint: "Kata Sandi",
@@ -202,7 +199,6 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
 
                                   const SizedBox(height: 15),
 
-                                  /// CONFIRM PASSWORD
                                   _buildTextField(
                                     controller: _confirmController,
                                     hint: "Konfirmasi Kata Sandi",

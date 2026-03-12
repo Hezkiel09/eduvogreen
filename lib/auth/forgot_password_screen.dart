@@ -21,7 +21,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  /// TEXTFIELD STYLE SAMA DENGAN REGISTER
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
@@ -103,7 +102,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          /// BACKGROUND
           SizedBox.expand(
             child: Image.asset(
               'assets/diatas-hijau.png',
@@ -120,7 +118,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 Expanded(
                   child: Stack(
                     children: [
-                      /// CARD PUTIH
                       Positioned(
                         top: 198,
                         left: 0,
@@ -196,7 +193,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                       ),
 
-                      /// ILUSTRASI
                       Positioned(
                         top: 47,
                         left: 0,
