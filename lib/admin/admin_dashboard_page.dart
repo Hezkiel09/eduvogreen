@@ -164,7 +164,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const UnggahVolunteerPage(),
+                          builder: (_) =>
+                              UnggahVolunteerPage(adminName: widget.adminName),
                         ),
                       );
 
