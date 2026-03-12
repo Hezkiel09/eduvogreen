@@ -5,14 +5,14 @@ class ArticleService {
   final _supabase = Supabase.instance.client;
   final String _tableName = 'articles';
 
-  // Mengambil daftar artikel dari Supabase
+  // ambil artikel dri supabase
   Future<List<ArticleModel>> getArticles() async {
     try {
       final response = await _supabase
           .from(_tableName)
           .select()
           .order('created_at', ascending: false);
-          
+
       return (response as List<dynamic>)
           .map((json) => ArticleModel.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -22,7 +22,7 @@ class ArticleService {
     }
   }
 
-  // Menambahkan artikel baru ke Supabase
+  // add new artikel
   Future<void> addArticle(ArticleModel article) async {
     try {
       await _supabase.from(_tableName).insert(article.toJson());

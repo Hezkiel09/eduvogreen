@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import '../models/article_model.dart';
 
 class ArticleDetailScreen extends StatelessWidget {
   const ArticleDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final article =
+        ModalRoute.of(context)?.settings.arguments as ArticleModel?;
 
-    final category = args?['category'] ?? 'Reboisasi';
-    final title =
-        args?['title'] ??
-        'Mengembalikan Napas Pesisir: Peran Mangrove Menahan Abrasi';
-    final author = args?['author'] ?? 'Antonio Ngarusolo';
-    final date = args?['date'] ?? '3 Maret 2026';
-    final imageAsset = args?['image'] ?? '';
-    final articleContent = args?['content'] ?? 'Konten artikel belum tersedia.';
+    final category = article?.category ?? 'Reboisasi';
+    final title = article?.title ?? 'Judul Artikel';
+    final author = article?.authorName ?? 'Penulis';
+    final date = article?.publishDate ?? '-';
+    final imageAsset = article?.thumbnail ?? '';
+    final articleContent = article?.content ?? 'Konten artikel belum tersedia.';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),

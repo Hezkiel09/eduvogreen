@@ -12,25 +12,13 @@ class HomeBottomNav extends StatelessWidget {
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         break;
       case 1:
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/eduhub',
-          ModalRoute.withName('/home'),
-        );
+        Navigator.pushNamed(context, '/eduhub');
         break;
       case 2:
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/volunteer',
-          ModalRoute.withName('/home'),
-        );
+        Navigator.pushNamed(context, '/volunteer');
         break;
       case 3:
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/profile',
-          ModalRoute.withName('/home'),
-        );
+        Navigator.pushNamed(context, '/profile');
         break;
     }
   }
