@@ -6,6 +6,11 @@ class ArticleInitial extends ArticleState {}
 
 class ArticleLoading extends ArticleState {}
 
+class ArticleLoaded extends ArticleState {
+  final List<ArticleModel> articles;
+  ArticleLoaded(this.articles);
+}
+
 class ArticleSuccess extends ArticleState {
   final String message;
   ArticleSuccess(this.message);

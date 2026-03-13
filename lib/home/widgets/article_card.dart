@@ -32,18 +32,25 @@ class ArticleCard extends StatelessWidget {
           // Thumbnail artikel
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              imageAsset,
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 90,
-                height: 90,
-                color: Colors.grey.shade200,
-                child: const Icon(Icons.image, color: Colors.grey, size: 32),
-              ),
-            ),
+            child: imageAsset.startsWith('http')
+                ? Image.network(
+                    imageAsset,
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        _placeholder(),
+                  )
+                : (imageAsset.isNotEmpty
+                    ? Image.asset(
+                        imageAsset,
+                        width: 90,
+                        height: 90,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            _placeholder(),
+                      )
+                    : _placeholder()),
           ),
           const SizedBox(width: 12),
 
@@ -98,4 +105,18 @@ class ArticleCard extends StatelessWidget {
       ),
     );
   }
+
+  Widget _placeholder() => Container(
+        width: 90,
+        height: 90,
+        decoration: BoxDecoration(
+          color: const Color(0xFFE8F5E9),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(
+          Icons.article_outlined,
+          color: Color(0xFF4FA057),
+          size: 32,
+        ),
+      );
 }

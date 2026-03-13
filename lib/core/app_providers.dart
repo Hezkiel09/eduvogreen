@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eduvogreen/eduhub/services/article_service.dart';
 import 'package:eduvogreen/eduhub/cubit/article_cubit.dart';
 import 'package:eduvogreen/cubit/auth_cubit.dart';
+import 'package:eduvogreen/profile/cubit/profile_cubit.dart';
 
 class AppProviders extends StatelessWidget {
   final Widget child;
@@ -21,6 +22,10 @@ class AppProviders extends StatelessWidget {
         providers: [
           BlocProvider<AuthCubit>(
             create: (context) => AuthCubit(),
+          ),
+          BlocProvider<ProfileCubit>(
+            create: (context) =>
+                ProfileCubit(authCubit: context.read<AuthCubit>()),
           ),
           BlocProvider<ArticleCubit>(
             create: (context) => ArticleCubit(context.read<ArticleService>()),

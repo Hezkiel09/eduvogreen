@@ -10,6 +10,32 @@ class ArticleCubit extends Cubit<ArticleState> {
 
   ArticleCubit(this._articleService) : super(ArticleInitial());
 
+  // Fetch artikel dari Supabase (untuk homepage & eduhub)
+  Future<void> fetchArticles() async {
+    emit(ArticleLoading());
+    try {
+      final articles = await _articleService.getArticles();
+      emit(ArticleLoaded(articles));
+    } catch (e) {
+      emit(ArticleError('Gagal memuat artikel: $e'));
+    }
+  }
+
+  // Cari artikel (Search)
+  Future<void> searchArticles(String query) async {
+    if (query.isEmpty) {
+      return fetchArticles();
+    }
+    
+    emit(ArticleLoading());
+    try {
+      final articles = await _articleService.searchArticles(query);
+      emit(ArticleLoaded(articles));
+    } catch (e) {
+      emit(ArticleError('Gagal mencari artikel: $e'));
+    }
+  }
+
   Future<void> submitArticle(
     ArticleModel article, {
     File? thumbnailFile,
@@ -47,3 +73,4 @@ class ArticleCubit extends Cubit<ArticleState> {
     }
   }
 }
+

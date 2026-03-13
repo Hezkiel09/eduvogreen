@@ -78,6 +78,11 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
+    if (_referenceController.text.trim().isNotEmpty) {
+      _references.add(_referenceController.text.trim());
+      _referenceController.clear();
+    }
+
     if (_wordCount < 300) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -112,7 +117,9 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
 
     final authState = context.read<AuthCubit>().state;
     final authorName = authState is Success
-        ? (authState.user.namaPanjang ?? authState.user.username)
+        ? (authState.user.username.isNotEmpty
+            ? '@${authState.user.username}'
+            : '@${(authState.user.namaPanjang ?? "User").replaceAll(' ', '').toLowerCase()}')
         : 'Kontributor Komunitas';
 
     const bulan = [
@@ -145,7 +152,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
       authorType: 'Kontributor Komunitas',
       publishDate: dateFormatted,
       readTimeMinutes: (_wordCount / 200).ceil(),
-      status: 'pending',
+      status: 'approved',
     );
 
     context.read<ArticleCubit>().submitArticle(newArticle, thumbnailFile: _thumbnailFile);
@@ -210,12 +217,6 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isFormValid =
-        _titleController.text.length >= 10 &&
-        _wordCount >= 300 &&
-        _references.isNotEmpty &&
-        _thumbnailFile != null;
-
     return BlocConsumer<ArticleCubit, ArticleState>(
       listener: (context, state) {
         if (state is ArticleLoading) {
@@ -698,9 +699,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                   child: ElevatedButton(
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isFormValid
-                          ? const Color(0xFF148A43)
-                          : const Color(0xFFAFAFAF),
+                      backgroundColor: const Color(0xFF148A43),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
