@@ -104,9 +104,6 @@ flutter run -d chrome  # Web
 3. `flutter analyze` & `flutter test`
 4. Submit PR
 
-## 📄 License
-This project is proprietary.
-
 ---
 
 **Built with ❤️ by EduVoGreen Team**
