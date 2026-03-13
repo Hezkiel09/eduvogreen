@@ -96,6 +96,9 @@ flutter:
     - assets/admin/tinjauA.png
     - assets/admin/unggahA.png
     - assets/admin/laporA.png
+    - assets/profile_default.jpg
+    - assets/minat.png
+    - assets/riser_badge_silver.png
 
   #   - images/a_dot_ham.jpeg
 

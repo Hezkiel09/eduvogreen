@@ -1,0 +1,758 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../models/article_model.dart';
+import '../cubit/article_cubit.dart';
+import 'package:eduvogreen/cubit/auth_cubit.dart';
+
+class AddArticleScreen extends StatefulWidget {
+  const AddArticleScreen({super.key});
+
+  @override
+  State<AddArticleScreen> createState() => _AddArticleScreenState();
+}
+
+class _AddArticleScreenState extends State<AddArticleScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
+  final _referenceController = TextEditingController();
+
+  String _selectedCategory = 'Climate Action';
+  final List<String> _tags = [];
+  final List<String> _references = [];
+  bool _hasThumbnail = false;
+  int _wordCount = 0;
+
+  final List<String> _categories = [
+    'Climate Action',
+    'Energi Terbarukan',
+    'Reboisasi',
+    'Sampah',
+    'Keanekaragaman Hayati',
+    'Lainnya',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _contentController.addListener(() {
+      final text = _contentController.text.trim();
+      final words = text.isEmpty
+          ? 0
+          : text.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length;
+      setState(() => _wordCount = words);
+    });
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    _referenceController.dispose();
+    super.dispose();
+  }
+
+  void _addReference() {
+    final ref = _referenceController.text.trim();
+    if (ref.isEmpty) return;
+    setState(() => _references.add(ref));
+    _referenceController.clear();
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_wordCount < 300) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Isi artikel minimal 300 kata. Sekarang: $_wordCount kata.',
+          ),
+          backgroundColor: Colors.red.shade600,
+        ),
+      );
+      return;
+    }
+
+    if (_references.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tambahkan minimal 1 referensi.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (!_hasThumbnail) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Thumbnail artikel wajib diunggah.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final authState = context.read<AuthCubit>().state;
+    final authorName = authState is Success
+        ? (authState.user.namaPanjang ?? authState.user.username)
+        : 'Kontributor Komunitas';
+
+    const bulan = [
+      '',
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+    final now = DateTime.now();
+    final dateFormatted = '${now.day} ${bulan[now.month]} ${now.year}';
+
+    final newArticle = ArticleModel(
+      id: '',
+      title: _titleController.text.trim(),
+      category: _selectedCategory,
+      tags: _tags,
+      thumbnail: '',
+      content: _contentController.text.trim(),
+      references: _references,
+      authorName: authorName,
+      authorType: 'Kontributor Komunitas',
+      publishDate: dateFormatted,
+      readTimeMinutes: (_wordCount / 200).ceil(),
+      status: 'pending',
+    );
+
+    context.read<ArticleCubit>().submitArticle(newArticle);
+  }
+
+  void _showSuccessDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        icon: const Icon(
+          Icons.check_circle,
+          color: Color(0xFF148A43),
+          size: 48,
+        ),
+        title: const Text(
+          'Artikel Berhasil Dipublish!',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 13, color: Colors.black54),
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF148A43),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/eduhub',
+                ); // Refresh pack
+              },
+              child: const Text('Lihat Artikel'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: Color(0xFF148A43)),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isFormValid =
+        _titleController.text.length >= 10 &&
+        _wordCount >= 300 &&
+        _references.isNotEmpty &&
+        _hasThumbnail;
+
+    return BlocConsumer<ArticleCubit, ArticleState>(
+      listener: (context, state) {
+        if (state is ArticleLoading) {
+          _showLoadingDialog(context);
+        } else if (state is ArticleSuccess) {
+          Navigator.pop(context);
+          _showSuccessDialog(context, state.message);
+        } else if (state is ArticleError) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: const Color(0xFFF4F4F4),
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            elevation: 0,
+            centerTitle: false,
+            title: const Text(
+              'Ajukan Artikel',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF148A43)),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          body: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      _buildCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _cardTitle(Icons.image_outlined, 'Header'),
+                            const SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: () => setState(
+                                () => _hasThumbnail = !_hasThumbnail,
+                              ),
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 24,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _hasThumbnail
+                                      ? const Color(
+                                          0xFF148A43,
+                                        ).withOpacity(0.05)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _hasThumbnail
+                                        ? const Color(0xFF148A43)
+                                        : Colors.grey.shade400,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: const Color(0xFF148A43),
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Icon(
+                                        Icons.file_upload_outlined,
+                                        color: Color(0xFF148A43),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildLabel(
+                                      'Unggah Thumbnail',
+                                      isRequired: true,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    const Text(
+                                      'Format JPG/JPEG, PNG maks 2MB',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      _buildCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _cardTitle(
+                              Icons.insert_page_break_outlined,
+                              'Identitas Artikel',
+                            ),
+                            const SizedBox(height: 16),
+
+                            _buildLabel('Judul Artikel', isRequired: true),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: _titleController,
+                              onChanged: (_) => setState(() {}),
+                              style: const TextStyle(fontSize: 13),
+                              maxLength: 100,
+                              validator: (val) {
+                                if (val == null || val.isEmpty)
+                                  return 'Judul wajib diisi';
+                                if (val.length < 10)
+                                  return 'Judul minimal 10 karakter';
+                                return null;
+                              },
+                              decoration: _inputDecoration(
+                                'Masukkan judul (Minimal 10 karakter)...',
+                              ).copyWith(counterText: ''),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${_titleController.text.length}/100',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey,
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+                            _buildLabel('Kategori', isRequired: true),
+                            const SizedBox(height: 8),
+                            DropdownButtonFormField<String>(
+                              value: null,
+                              hint: const Text(
+                                'Pilih Kategori',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black38,
+                                ),
+                              ),
+                              decoration: _inputDecoration(''),
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.black87,
+                              ),
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.black38,
+                              ),
+                              items: _categories
+                                  .map(
+                                    (c) => DropdownMenuItem(
+                                      value: c,
+                                      child: Text(c),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (val) {
+                                if (val != null)
+                                  setState(() => _selectedCategory = val);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      _buildCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _cardTitle(
+                              Icons.notes,
+                              'Isi Artikel',
+                              isRedStar: true,
+                            ),
+                            const SizedBox(height: 16),
+
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Mockup Toolbar
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF9F9F9),
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          'H2',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        const Text(
+                                          'B',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        const Text(
+                                          'I',
+                                          style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 16,
+                                            fontFamily: 'serif',
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        Container(
+                                          width: 1,
+                                          height: 16,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                        const SizedBox(width: 16),
+                                        const Icon(
+                                          Icons.format_list_bulleted,
+                                          size: 20,
+                                          color: Colors.black87,
+                                        ),
+                                        const SizedBox(width: 16),
+                                        const Icon(
+                                          Icons.link,
+                                          size: 20,
+                                          color: Colors.black87,
+                                        ),
+                                        const SizedBox(width: 16),
+                                        const Icon(
+                                          Icons.image_outlined,
+                                          size: 20,
+                                          color: Colors.black87,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Text Field
+                                  TextFormField(
+                                    controller: _contentController,
+                                    maxLines: 9,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      height: 1.5,
+                                    ),
+                                    decoration: const InputDecoration(
+                                      hintText:
+                                          'Tuliskan riset, opini, atau pengalamanmu di sini (Minimal 300 kata)...',
+                                      hintStyle: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.black38,
+                                      ),
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.all(16),
+                                    ),
+                                    validator: (val) {
+                                      if (val == null || val.isEmpty)
+                                        return 'Isi artikel wajib diisi';
+                                      return null;
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '$_wordCount/300',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: _wordCount >= 300
+                                    ? Colors.green
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      _buildCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _cardTitle(
+                              Icons.menu_book,
+                              'Referensi dan Lampiran',
+                            ),
+                            const SizedBox(height: 16),
+
+                            _buildLabel('Sumber Referensi', isRequired: true),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: _referenceController,
+                              style: const TextStyle(fontSize: 13),
+                              decoration: _inputDecoration(
+                                'Masukkan judul link URL atau Sitasi Buku',
+                              ),
+                              onFieldSubmitted: (_) => _addReference(),
+                            ),
+                            const SizedBox(height: 12),
+                            GestureDetector(
+                              onTap: _addReference,
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.add_circle_outline,
+                                    color: Color(0xFF148A43),
+                                    size: 16,
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Tambah Referensi',
+                                    style: TextStyle(
+                                      color: Color(0xFF148A43),
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (_references.isNotEmpty) ...[
+                              const SizedBox(height: 12),
+                              ..._references.asMap().entries.map(
+                                (entry) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 6),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.check,
+                                        size: 14,
+                                        color: Color(0xFF148A43),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Text(
+                                          entry.value,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => setState(
+                                          () => _references.removeAt(entry.key),
+                                        ),
+                                        child: const Icon(
+                                          Icons.close,
+                                          size: 16,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+
+                            const SizedBox(height: 24),
+                            RichText(
+                              text: const TextSpan(
+                                text: 'Link Video YouTube / Link Gambar ',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF1A1A1A),
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: '(Opsional)',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              style: const TextStyle(fontSize: 13),
+                              decoration: _inputDecoration('https://...'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+             
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: _submit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isFormValid
+                          ? const Color(0xFF148A43)
+                          : const Color(0xFFAFAFAF),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Ajukan Artikel',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCard({required Widget child}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: child,
+    );
+  }
+
+  Widget _cardTitle(IconData icon, String title, {bool isRedStar = false}) {
+    return Row(
+      children: [
+        Icon(icon, color: const Color(0xFF148A43), size: 20),
+        const SizedBox(width: 8),
+        RichText(
+          text: TextSpan(
+            text: title,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1A1A1A),
+            ),
+            children: [
+              if (isRedStar)
+                const TextSpan(
+                  text: ' *',
+                  style: TextStyle(color: Colors.red),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLabel(String label, {bool isRequired = false}) {
+    return RichText(
+      text: TextSpan(
+        text: label,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF1A1A1A),
+        ),
+        children: [
+          if (isRequired)
+            const TextSpan(
+              text: ' *',
+              style: TextStyle(color: Colors.red),
+            ),
+        ],
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: const TextStyle(fontSize: 13, color: Colors.black38),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Color(0xFF148A43), width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+    );
+  }
+}

@@ -1,55 +1,67 @@
-import 'package:eduvogreen/auth/login_screen.dart';
-import 'package:eduvogreen/auth/minat.dart';
-import 'package:eduvogreen/auth/register_screen.dart';
 import 'package:eduvogreen/core/supabase_client.dart';
-import 'package:eduvogreen/cubit/auth_cubit.dart';
-import 'package:eduvogreen/home/home_screen.dart';
-import 'package:eduvogreen/volunteer/volunteer_screen.dart';
-import 'package:eduvogreen/admin/admin_dashboard_page.dart';
-import 'package:eduvogreen/auth/reset_password_screen.dart';
-
+import 'package:eduvogreen/core/app_providers.dart';
+import 'package:eduvogreen/core/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await SupabaseConfig.init();
 
-  runApp(const MyApp());
+  final uri = Uri.base;
+  String initialRoute = AppRoutes.login;
+
+  if (uri.path == '/reset-password') {
+    initialRoute = AppRoutes.resetPassword;
+
+    final fragment = uri.fragment;
+
+    if (fragment.contains('refresh_token')) {
+      final params = Uri.splitQueryString(fragment);
+
+      final refreshToken = params['refresh_token'];
+
+      if (refreshToken != null) {
+        await Supabase.instance.client.auth.setSession(refreshToken);
+      }
+    }
+  }
+
+  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    final event = data.event;
+
+    if (event == AuthChangeEvent.passwordRecovery) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        navigatorKey.currentState?.pushReplacementNamed(
+          AppRoutes.resetPassword,
+        );
+      });
+    }
+  });
+
+  runApp(MyApp(initialRoute: initialRoute));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthCubit(),
+    return AppProviders(
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'EduVoGreen',
-
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-          fontFamily: GoogleFonts.montserrat().fontFamily,
-          scaffoldBackgroundColor: Colors.white,
         ),
-
-        initialRoute: '/volunteer',
-
-        routes: {
-          '/login': (_) => const LoginScreen(),
-          '/register': (_) => const RegisterScreen(),
-          '/home': (_) => const HomeScreen(),
-          '/minat': (_) => const MinatScreen(),
-          '/volunteer': (_) => const VolunteerScreen(),
-          '/reset_password': (_) => const ResetPasswordScreen(),
-
-          '/admin': (_) => const AdminDashboardPage(
-                adminName: "Admin",
-              ),
-        },
+        initialRoute: initialRoute,
+        routes: AppRoutes.routes,
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/gestures.dart';
 import 'register_password_screen.dart';
 import 'package:flutter/gestures.dart';
 
@@ -129,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: 198,
+                        top: 155,
                         left: 0,
                         right: 0,
                         bottom: 0,
@@ -201,7 +202,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                     ),
                                   ),
-
                                   const SizedBox(height: 20),
 
                                   Center(
@@ -234,7 +234,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       Positioned(
-                        top: 47,
+                        top: 10,
                         left: 0,
                         right: 0,
                         child: Center(

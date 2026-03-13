@@ -28,10 +28,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }) {
     return TextFormField(
       controller: controller,
-      style: const TextStyle(
-        color: Colors.black,
-        fontSize: 13,
-      ),
+      style: const TextStyle(color: Colors.black, fontSize: 13),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "Email wajib diisi";
@@ -42,16 +39,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         return null;
       },
       decoration: InputDecoration(
-        prefixIcon: Icon(
-          icon,
-          size: 18,
-          color: Colors.grey,
-        ),
+        prefixIcon: Icon(icon, size: 18, color: Colors.grey),
         hintText: hint,
-        hintStyle: const TextStyle(
-          fontSize: 13,
-          color: Colors.grey,
-        ),
+        hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
         filled: true,
         fillColor: const Color(0xFFF5F5F5),
         contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -73,6 +63,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     try {
       await Supabase.instance.client.auth.resetPasswordForEmail(
         _emailController.text.trim(),
+        redirectTo: 'http://localhost:3000/reset-password',
       );
 
       if (!mounted) return;
@@ -85,11 +76,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Terjadi kesalahan: $e"),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Terjadi kesalahan: $e")));
     }
 
     setState(() {
@@ -103,10 +92,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       body: Stack(
         children: [
           SizedBox.expand(
-            child: Image.asset(
-              'assets/diatas-hijau.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
 
           SafeArea(
@@ -169,16 +155,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     height: 45,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xFF188C42),
+                                        backgroundColor: const Color(
+                                          0xFF188C42,
+                                        ),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
+                                          borderRadius: BorderRadius.circular(
+                                            50,
+                                          ),
                                         ),
                                       ),
-                                      onPressed:
-                                          _isLoading ? null : _sendResetEmail,
+                                      onPressed: _isLoading
+                                          ? null
+                                          : _sendResetEmail,
                                       child: _isLoading
                                           ? const CircularProgressIndicator(
                                               color: Colors.white,

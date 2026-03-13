@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:eduvogreen/core/app_routes.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -37,25 +38,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       controller: controller,
       obscureText: obscure,
       validator: validator,
-      style: const TextStyle(
-        fontSize: 13,
-        color: Colors.black,
-      ),
+      style: const TextStyle(fontSize: 13),
       decoration: InputDecoration(
-        prefixIcon: Icon(
-          icon,
-          size: 18,
-          color: Colors.grey,
-        ),
+        prefixIcon: Icon(icon, size: 18),
         suffixIcon: suffix,
         hintText: hint,
-        hintStyle: const TextStyle(
-          fontSize: 13,
-          color: Colors.grey,
-        ),
         filled: true,
         fillColor: const Color(0xFFF5F5F5),
-        contentPadding: const EdgeInsets.symmetric(vertical: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -72,10 +61,26 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     });
 
     try {
+      Session? session;
+
+      for (int i = 0; i < 5; i++) {
+        session = Supabase.instance.client.auth.currentSession;
+
+        if (session != null) {
+          break;
+        }
+
+        await Future.delayed(const Duration(milliseconds: 400));
+      }
+
+      if (session == null) {
+        throw Exception(
+          "Link reset tidak valid atau sudah expired. Gunakan email terbaru.",
+        );
+      }
+
       await Supabase.instance.client.auth.updateUser(
-        UserAttributes(
-          password: _passwordController.text.trim(),
-        ),
+        UserAttributes(password: _passwordController.text.trim()),
       );
 
       if (!mounted) return;
@@ -84,11 +89,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         const SnackBar(content: Text("Password berhasil diperbarui")),
       );
 
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Terjadi kesalahan: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Terjadi kesalahan: $e")));
     }
 
     setState(() {
@@ -102,18 +107,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       body: Stack(
         children: [
           SizedBox.expand(
-            child: Image.asset(
-              'assets/diatas-hijau.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
-
           SafeArea(
-            bottom: false,
             child: Column(
               children: [
                 const SizedBox(height: 10),
-
                 Expanded(
                   child: Stack(
                     children: [
@@ -144,14 +143,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-
                                   const SizedBox(height: 4),
-
                                   const Text(
                                     "Masukkan kata sandi baru",
                                     style: TextStyle(fontSize: 12),
                                   ),
-
                                   const SizedBox(height: 30),
 
                                   _buildTextField(
@@ -218,16 +214,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                     height: 45,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xFF188C42),
+                                        backgroundColor: const Color(
+                                          0xFF188C42,
+                                        ),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
+                                          borderRadius: BorderRadius.circular(
+                                            50,
+                                          ),
                                         ),
                                       ),
-                                      onPressed:
-                                          _isLoading ? null : _updatePassword,
+                                      onPressed: _isLoading
+                                          ? null
+                                          : _updatePassword,
                                       child: _isLoading
                                           ? const CircularProgressIndicator(
                                               color: Colors.white,
@@ -241,7 +240,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                         ),
                       ),
-
                       Positioned(
                         top: 47,
                         left: 0,
