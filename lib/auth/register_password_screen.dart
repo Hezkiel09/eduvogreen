@@ -40,22 +40,12 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
       controller: controller,
       obscureText: obscure,
       validator: validator,
-      style: const TextStyle(
-        color: Colors.black,
-        fontSize: 13,
-      ),
+      style: const TextStyle(color: Colors.black, fontSize: 13),
       decoration: InputDecoration(
-        prefixIcon: Icon(
-          icon,
-          size: 18,
-          color: Colors.grey,
-        ),
+        prefixIcon: Icon(icon, size: 18, color: Colors.grey),
         suffixIcon: suffix,
         hintText: hint,
-        hintStyle: const TextStyle(
-          fontSize: 13,
-          color: Colors.grey,
-        ),
+        hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
         filled: true,
         fillColor: const Color(0xFFF5F5F5),
         contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -85,15 +75,15 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Akun berhasil dibuat")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Akun berhasil dibuat")));
 
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/minat');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Signup gagal: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Signup gagal: $e")));
     }
   }
 
@@ -103,10 +93,7 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
       body: Stack(
         children: [
           SizedBox.expand(
-            child: Image.asset(
-              'assets/diatas-hijau.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
 
           SafeArea(
@@ -253,11 +240,14 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                                     height: 45,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF188C42),
+                                        backgroundColor: const Color(
+                                          0xFF188C42,
+                                        ),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
+                                          borderRadius: BorderRadius.circular(
+                                            50,
+                                          ),
                                         ),
                                       ),
                                       onPressed: _signUp,

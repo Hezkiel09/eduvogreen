@@ -51,24 +51,38 @@ class _ArticleDetailScreenState extends State<ArticleDetailScreen> {
                     borderRadius: const BorderRadius.vertical(
                       bottom: Radius.circular(28),
                     ),
-                    child: Image.asset(
-                      imageAsset,
-                      height: 260,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) {
-                        return Container(
-                          height: 260,
-                          width: double.infinity,
-                          color: Colors.grey.shade300,
-                          child: const Icon(
-                            Icons.image,
-                            size: 42,
-                            color: Colors.grey,
+                    child: imageAsset.startsWith('http')
+                        ? Image.network(
+                            imageAsset,
+                            height: 260,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (_, child, progress) {
+                              if (progress == null) return child;
+                              return Container(
+                                height: 260,
+                                color: Colors.grey.shade200,
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xFF148A43),
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (_, __, ___) => Container(
+                              height: 260,
+                              width: double.infinity,
+                              color: Colors.grey.shade300,
+                              child: const Icon(Icons.image, size: 42, color: Colors.grey),
+                            ),
+                          )
+                        : Container(
+                            height: 260,
+                            width: double.infinity,
+                            color: Colors.grey.shade300,
+                            child: const Icon(Icons.image, size: 42, color: Colors.grey),
                           ),
-                        );
-                      },
-                    ),
                   ),
                   Positioned(
                     top: 16,

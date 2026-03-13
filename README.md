@@ -1,11 +1,15 @@
 # EduVoGreen 🌱
 
+A new Flutter project.
 Aplikasi edukasi dan volunteer berbasis komunitas untuk lingkungan hijau. Dibangun dengan Flutter & Supabase.
 
-[![Flutter](https://flutter.dev/images/flutter-logo-sharing.png)](https://flutter.dev)
+## Getting Started
+- 
 
+This project is a starting point for a Flutter application.
 ## 🚀 Fitur-Fitur Aplikasi
 
+A few resources to get you started if this is your first Flutter project:
 ### **MVP Features** ⭐
 - **Authentication** (MVP): Login/register email-password, forgot/reset password via Supabase Auth
 - **Volunteer Events** (MVP): List events, detail, join/report dengan image picker
@@ -18,6 +22,9 @@ Aplikasi edukasi dan volunteer berbasis komunitas untuk lingkungan hijau. Dibang
 - Bottom navigation, responsive tabs/popups
 - Multi-role access (User/Admin)
 
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
 ## 🛠️ Tech Stack
 Lihat detail di [TECH_STACK.md](./TECH_STACK.md)
 
@@ -25,7 +32,7 @@ Lihat detail di [TECH_STACK.md](./TECH_STACK.md)
 | Category | Technologies |
 |----------|--------------|
 | **Framework** | Flutter (Dart) |
-| **State Mgmt** | Flutter Bloc + Cubits |
+| **State Management** | Flutter Bloc + Cubits |
 | **Backend** | Supabase (Auth/DB) |
 | **UI** | Material Design, Google Fonts (Montserrat) |
 | **Utils** | image_picker, intl |
@@ -48,11 +55,7 @@ Flutter App
 | Platform | Status |
 |----------|--------|
 | **Android** | ✅ Ready |
-| **iOS** | ✅ Ready |
 | **Web** | ✅ Ready |
-| **Windows** | ✅ Ready |
-| **macOS** | ✅ Ready |
-| **Linux** | ✅ Ready |
 
 ## 🏁 Getting Started
 
@@ -69,8 +72,6 @@ flutter run
 ### Run on specific platform
 ```bash
 flutter run -d chrome     # Web
-flutter run -d windows    # Windows
-flutter run -d macos      # macOS
 ```
 
 ## 📚 Additional Docs
@@ -90,4 +91,3 @@ This project is proprietary.
 ---
 
 **Built with ❤️ by EduVoGreen Team**
-

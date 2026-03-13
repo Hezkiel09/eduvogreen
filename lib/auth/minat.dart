@@ -142,7 +142,11 @@ class _MinatScreenState extends State<MinatScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: isButtonEnabled ? () {} : null,
+                  onPressed: isButtonEnabled
+                      ? () {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isButtonEnabled
                         ? const Color(0xFF188C42)

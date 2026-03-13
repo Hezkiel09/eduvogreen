@@ -35,24 +35,38 @@ class ArticleListCard extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(18),
                 ),
-                child: Image.asset(
-                  imageAsset,
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) {
-                    return Container(
-                      height: 150,
-                      width: double.infinity,
-                      color: Colors.grey.shade300,
-                      child: const Icon(
-                        Icons.image,
-                        size: 40,
-                        color: Colors.grey,
+                child: imageAsset.startsWith('http')
+                    ? Image.network(
+                        imageAsset,
+                        height: 150,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (_, child, progress) {
+                          if (progress == null) return child;
+                          return Container(
+                            height: 150,
+                            color: Colors.grey.shade200,
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF148A43),
+                                strokeWidth: 2,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (_, __, ___) => Container(
+                          height: 150,
+                          width: double.infinity,
+                          color: Colors.grey.shade300,
+                          child: const Icon(Icons.image, size: 40, color: Colors.grey),
+                        ),
+                      )
+                    : Container(
+                        height: 150,
+                        width: double.infinity,
+                        color: Colors.grey.shade300,
+                        child: const Icon(Icons.image, size: 40, color: Colors.grey),
                       ),
-                    );
-                  },
-                ),
               ),
               Positioned(
                 top: 12,

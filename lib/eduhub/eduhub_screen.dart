@@ -166,9 +166,7 @@ class _EduHubScreenState extends State<EduHubScreen> {
                               : item.content,
                           author: item.authorName,
                           date: item.publishDate,
-                          imageAsset: item.thumbnail.isEmpty
-                              ? 'assets/article1.jpg' // Default jika kosong dari DB
-                              : item.thumbnail,
+                          imageAsset: item.thumbnail,
                         ),
                       );
                     },
