@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'volunteer_model.dart';
 import 'widgets/volunteer_card.dart';
 import 'widgets/volunteer_tabs.dart';
+import 'widgets/home_bottom_nav.dart';
 
 class VolunteerScreen extends StatefulWidget {
   const VolunteerScreen({super.key});
@@ -37,7 +38,6 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Bersedia mengikuti kegiatan hingga selesai",
         "Membawa topi & botol minum pribadi",
       ],
-
       benefits: [
         Benefit(
           title: "Sertifikat partisipasi",
@@ -71,7 +71,6 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Menyukai kegiatan alam",
         "Bersedia bekerja dalam tim",
       ],
-
       benefits: [
         Benefit(
           title: "Sertifikat partisipasi",
@@ -105,7 +104,6 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Suka mengajar anak-anak",
         "Minimal usia 18 tahun",
       ],
-
       benefits: [
         Benefit(
           title: "Sertifikat partisipasi",
@@ -143,7 +141,6 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Bersedia mengikuti pelatihan kesehatan lingkungan",
         "Bersedia bekerja di luar ruangan",
       ],
-
       benefits: [
         Benefit(
           title: "Sertifikat partisipasi",
@@ -177,7 +174,6 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         "Bersedia mengikuti arahan tim",
         "Bersedia bekerja dalam kondisi basah dan kotor",
       ],
-
       benefits: [
         Benefit(
           title: "Sertifikat partisipasi",
@@ -196,12 +192,10 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
   @override
   Widget build(BuildContext context) {
     List<VolunteerEvent> open = events.where((e) => e.isOpen).toList();
-
     List<VolunteerEvent> upcoming = events.where((e) => !e.isOpen).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: Column(
         children: [
           ClipRRect(
@@ -216,9 +210,7 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
-
                 Container(height: 180, color: Colors.black.withOpacity(0.35)),
-
                 const Positioned(
                   top: 45,
                   left: 0,
@@ -233,9 +225,7 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                       SizedBox(height: 4),
-
                       Text(
                         "Temukan kegiatan volunteer yang \nsesuai dengan minat Anda",
                         textAlign: TextAlign.center,
@@ -260,8 +250,6 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
             ),
           ),
 
-          const SizedBox(height: 0),
-
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16),
@@ -280,23 +268,7 @@ class _VolunteerScreenState extends State<VolunteerScreen> {
         ],
       ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 2,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
-
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home), 
-            label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: "EduHub"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.volunteer_activism),
-            label: "Volunteer",
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
-        ],
-      ),
+      bottomNavigationBar: const HomeBottomNav(currentIndex: 1),
     );
   }
 }

@@ -25,35 +25,29 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthCubit(),
+      create: (_) => AuthCubit(),
       child: MaterialApp(
-        title: 'EduVoGreen',
         debugShowCheckedModeBanner: false,
+        title: 'EduVoGreen',
 
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           fontFamily: GoogleFonts.montserrat().fontFamily,
+          scaffoldBackgroundColor: Colors.white,
         ),
 
-        // Halaman pertama
-        initialRoute: '/admin',
+        initialRoute: '/volunteer',
 
         routes: {
-          '/login': (context) => const LoginScreen(),
+          '/login': (_) => const LoginScreen(),
+          '/register': (_) => const RegisterScreen(),
+          '/home': (_) => const HomeScreen(),
+          '/minat': (_) => const MinatScreen(),
+          '/volunteer': (_) => const VolunteerScreen(),
+          '/reset_password': (_) => const ResetPasswordScreen(),
 
-          '/register': (context) => const RegisterScreen(),
-
-          '/home': (context) => const HomeScreen(),
-
-          '/minat': (context) => const MinatScreen(),
-
-          '/volunteer': (context) => const VolunteerScreen(),
-
-          '/reset_password': (context) => const ResetPasswordScreen(),
-
-          // Admin dashboard
-          '/admin': (context) => const AdminDashboardPage(
-                adminName: "Admin", // sementara dummy
+          '/admin': (_) => const AdminDashboardPage(
+                adminName: "Admin",
               ),
         },
       ),
