@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubit/auth_cubit.dart';
 import '../home/widgets/home_bottom_nav.dart';
 import 'widgets/profile_menu_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  Future<void> _logout(BuildContext context) async {
+    final navigator = Navigator.of(context);
+    await context.read<AuthCubit>().signOut();
+    navigator.pushNamedAndRemoveUntil('/login', (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +154,55 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(context, '/reports');
                       },
+                    ),
+
+                    // KONTAK KAMI
+                    ProfileMenuTile(
+                      icon: Icons.support_agent_outlined,
+                      title: 'Kontak Kami',
+                      subtitle: 'Hubungi kami melalui kontak ini',
+                      onTap: () {
+                        Navigator.pushNamed(context, '/contact');
+                      },
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // KELUAR AKUN
+                    GestureDetector(
+                      onTap: () => _logout(context),
+                      child: Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF0F0),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: const Color(0xFFFFCDD2)),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.logout_rounded,
+                              color: Color(0xFFD32F2F),
+                              size: 20,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Keluar Akun',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFFD32F2F),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
 
                     const SizedBox(height: 40),

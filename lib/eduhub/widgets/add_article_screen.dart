@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import '../models/article_model.dart';
 import '../cubit/article_cubit.dart';
 import 'package:eduvogreen/cubit/auth_cubit.dart';
@@ -21,7 +23,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
   String _selectedCategory = 'Climate Action';
   final List<String> _tags = [];
   final List<String> _references = [];
-  bool _hasThumbnail = false;
+  File? _thumbnailFile;
   int _wordCount = 0;
 
   final List<String> _categories = [
@@ -51,6 +53,19 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
     _contentController.dispose();
     _referenceController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickThumbnail() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1280,
+      maxHeight: 720,
+      imageQuality: 85,
+    );
+    if (picked != null) {
+      setState(() => _thumbnailFile = File(picked.path));
+    }
   }
 
   void _addReference() {
@@ -85,7 +100,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
       return;
     }
 
-    if (!_hasThumbnail) {
+    if (_thumbnailFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Thumbnail artikel wajib diunggah.'),
@@ -123,7 +138,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
       title: _titleController.text.trim(),
       category: _selectedCategory,
       tags: _tags,
-      thumbnail: '',
+      thumbnail: '', // akan diisi setelah upload di cubit
       content: _contentController.text.trim(),
       references: _references,
       authorName: authorName,
@@ -133,7 +148,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
       status: 'pending',
     );
 
-    context.read<ArticleCubit>().submitArticle(newArticle);
+    context.read<ArticleCubit>().submitArticle(newArticle, thumbnailFile: _thumbnailFile);
   }
 
   void _showSuccessDialog(BuildContext context, String message) {
@@ -199,7 +214,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
         _titleController.text.length >= 10 &&
         _wordCount >= 300 &&
         _references.isNotEmpty &&
-        _hasThumbnail;
+        _thumbnailFile != null;
 
     return BlocConsumer<ArticleCubit, ArticleState>(
       listener: (context, state) {
@@ -250,59 +265,97 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                             _cardTitle(Icons.image_outlined, 'Header'),
                             const SizedBox(height: 16),
                             GestureDetector(
-                              onTap: () => setState(
-                                () => _hasThumbnail = !_hasThumbnail,
-                              ),
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 24,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: _hasThumbnail
-                                      ? const Color(
-                                          0xFF148A43,
-                                        ).withOpacity(0.05)
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: _hasThumbnail
-                                        ? const Color(0xFF148A43)
-                                        : Colors.grey.shade400,
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: const Color(0xFF148A43),
+                              onTap: _pickThumbnail,
+                              child: _thumbnailFile != null
+                                  // === PREVIEW image yang sudah dipilih ===
+                                  ? Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(12),
+                                          child: Image.file(
+                                            _thumbnailFile!,
+                                            width: double.infinity,
+                                            height: 180,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                        borderRadius: BorderRadius.circular(8),
+                                        Positioned(
+                                          top: 8,
+                                          right: 8,
+                                          child: GestureDetector(
+                                            onTap: () => setState(() => _thumbnailFile = null),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.black54,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: const Icon(
+                                                Icons.close,
+                                                color: Colors.white,
+                                                size: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 8,
+                                          right: 8,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                            decoration: BoxDecoration(
+                                              color: Colors.black54,
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: const Row(
+                                              children: [
+                                                Icon(Icons.edit, color: Colors.white, size: 12),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  'Ganti',
+                                                  style: TextStyle(color: Colors.white, fontSize: 11),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  // === Upload placeholder ===
+                                  : Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(vertical: 24),
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: Colors.grey.shade400,
+                                          width: 1,
+                                        ),
                                       ),
-                                      child: const Icon(
-                                        Icons.file_upload_outlined,
-                                        color: Color(0xFF148A43),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: const Color(0xFF148A43)),
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: const Icon(
+                                              Icons.file_upload_outlined,
+                                              color: Color(0xFF148A43),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          _buildLabel('Unggah Thumbnail', isRequired: true),
+                                          const SizedBox(height: 4),
+                                          const Text(
+                                            'Format JPG/JPEG, PNG maks 2MB',
+                                            style: TextStyle(fontSize: 11, color: Colors.grey),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    const SizedBox(height: 12),
-                                    _buildLabel(
-                                      'Unggah Thumbnail',
-                                      isRequired: true,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    const Text(
-                                      'Format JPG/JPEG, PNG maks 2MB',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
                             ),
                           ],
                         ),
