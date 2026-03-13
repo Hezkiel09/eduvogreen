@@ -6,6 +6,8 @@ import 'package:eduvogreen/eduhub/widgets/article_detail_screen.dart';
 import 'package:eduvogreen/eduhub/widgets/add_article_screen.dart';
 import 'package:eduvogreen/home/home_screen.dart';
 import 'package:eduvogreen/profile/profile_screen.dart';
+import 'package:eduvogreen/profile/widgets/edit_profile_screen.dart';
+import 'package:eduvogreen/eduhub/widgets/saved_articles_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -18,6 +20,8 @@ class AppRoutes {
   static const String addArticle = '/add-article';
   static const String volunteer = '/volunteer';
   static const String profile = '/profile';
+  static const String savedArticles = '/saved-articles';
+  static const String editProfile = '/edit-profile';
 
   static Map<String, WidgetBuilder> get routes => {
         login: (context) => const LoginScreen(),
@@ -30,5 +34,7 @@ class AppRoutes {
         volunteer: (context) =>
             const Scaffold(body: Center(child: Text('Volunteer'))),
         profile: (context) => const ProfileScreen(),
+        savedArticles: (context) => const SavedArticlesScreen(),
+        editProfile: (context) => const EditProfileScreen(),
       };
 }

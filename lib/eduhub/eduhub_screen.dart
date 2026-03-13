@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../home/widgets/home_bottom_nav.dart';
 import 'widgets/article_list_card.dart';
-import 'services/article_service.dart';
-import 'models/article_model.dart';
+import 'cubit/article_cubit.dart';
 
 class EduHubScreen extends StatefulWidget {
   const EduHubScreen({super.key});
@@ -12,20 +13,34 @@ class EduHubScreen extends StatefulWidget {
 }
 
 class _EduHubScreenState extends State<EduHubScreen> {
-  final ArticleService _articleService = ArticleService();
-  late Future<List<ArticleModel>> _articlesFuture;
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    _articlesFuture = _articleService.getArticles();
+    // Fetch articles on load
+    context.read<ArticleCubit>().fetchArticles();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      context.read<ArticleCubit>().searchArticles(query);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF148A43),
         onPressed: () {
@@ -33,7 +48,6 @@ class _EduHubScreenState extends State<EduHubScreen> {
         },
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
-
       bottomNavigationBar: const HomeBottomNav(currentIndex: 2),
       body: SafeArea(
         child: Column(
@@ -86,21 +100,17 @@ class _EduHubScreenState extends State<EduHubScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      child: const TextField(
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: _onSearchChanged,
                         textAlignVertical: TextAlignVertical.center,
-                        style: TextStyle(fontSize: 12, color: Colors.black87),
-                        decoration: InputDecoration(
-                          hintText:
-                              'Cari artikel atau topik yang sesuai dengan minatmu!',
+                        style: const TextStyle(fontSize: 12, color: Colors.black87),
+                        decoration: const InputDecoration(
+                          hintText: 'Cari artikel atau topik...',
                           hintStyle: TextStyle(
                             fontSize: 12,
                             color: Colors.black38,
                           ),
-                          // prefixIcon: Icon(
-                          //   Icons.search,
-                          //   color: Colors.black45,
-                          //   size: 20,
-                          // ),
                           suffixIcon: Icon(
                             Icons.search,
                             color: Colors.black45,
@@ -119,58 +129,68 @@ class _EduHubScreenState extends State<EduHubScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 14),
-
             Expanded(
-              child: FutureBuilder<List<ArticleModel>>(
-                future: _articlesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+              child: BlocBuilder<ArticleCubit, ArticleState>(
+                builder: (context, state) {
+                  if (state is ArticleLoading) {
                     return const Center(
                       child: CircularProgressIndicator(
                         color: Color(0xFF148A43),
                       ),
                     );
-                  } else if (snapshot.hasError) {
+                  } else if (state is ArticleError) {
                     return Center(
-                      child: Text('Terjadi kesalahan: ${snapshot.error}'),
+                      child: Text(state.errorMessage),
                     );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('Belum ada artikel yang tersedia.'),
-                    );
-                  }
+                  } else if (state is ArticleLoaded) {
+                    final articles = state.articles;
 
-                  final articles = snapshot.data!;
-
-                  return ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
-                    itemCount: articles.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 14),
-                    itemBuilder: (context, index) {
-                      final item = articles[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/article-detail',
-                            arguments: item,
-                          );
-                        },
-                        child: ArticleListCard(
-                          category: item.category,
-                          title: item.title,
-                          preview: item.content.length > 100
-                              ? '${item.content.substring(0, 100)}...'
-                              : item.content,
-                          author: item.authorName,
-                          date: item.publishDate,
-                          imageAsset: item.thumbnail,
+                    if (articles.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search_off, size: 60, color: Colors.grey.shade400),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Artikel tidak ditemukan',
+                              style: TextStyle(color: Colors.black54, fontSize: 16),
+                            ),
+                          ],
                         ),
                       );
-                    },
-                  );
+                    }
+
+                    return ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                      itemCount: articles.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 14),
+                      itemBuilder: (context, index) {
+                        final item = articles[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/article-detail',
+                              arguments: item,
+                            );
+                          },
+                          child: ArticleListCard(
+                            category: item.category,
+                            title: item.title,
+                            preview: item.content.length > 100
+                                ? '${item.content.substring(0, 100)}...'
+                                : item.content,
+                            author: item.authorName,
+                            date: item.publishDate,
+                            imageAsset: item.thumbnail,
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return const SizedBox.shrink();
                 },
               ),
             ),

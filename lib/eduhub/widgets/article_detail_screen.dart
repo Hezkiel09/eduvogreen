@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/article_model.dart';
+import '../services/article_service.dart';
+import 'package:eduvogreen/cubit/auth_cubit.dart';
 
 class ArticleDetailScreen extends StatefulWidget {
   const ArticleDetailScreen({super.key});
@@ -9,38 +12,99 @@ class ArticleDetailScreen extends StatefulWidget {
 }
 
 class _ArticleDetailScreenState extends State<ArticleDetailScreen> {
+  final ArticleService _articleService = ArticleService();
   bool _isSaved = false;
+  bool _isLoadingSavedStatus = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _checkSavedStatus();
+  }
+
+  Future<void> _checkSavedStatus() async {
+    final article = ModalRoute.of(context)?.settings.arguments as ArticleModel?;
+    if (article == null) return;
+
+    final authState = context.read<AuthCubit>().state;
+    if (authState is Success) {
+      // Kita butuh user ID dari supabase auth
+      final user = context.read<AuthCubit>().currentUser;
+      if (user != null) {
+        final isSaved = await _articleService.isArticleSaved(user.id, article.id);
+        if (mounted) {
+          setState(() {
+            _isSaved = isSaved;
+            _isLoadingSavedStatus = false;
+          });
+        }
+      }
+    } else {
+      setState(() => _isLoadingSavedStatus = false);
+    }
+  }
+
+  Future<void> _toggleSave(ArticleModel article) async {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is! Success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Silakan login untuk menyimpan artikel')),
+      );
+      return;
+    }
+
+    final user = context.read<AuthCubit>().currentUser;
+    if (user == null) return;
+
+    // Simpan status lama untuk rollback jika gagal
+    final oldStatus = _isSaved;
+    setState(() => _isSaved = !_isSaved);
+
+    try {
+      await _articleService.toggleSaveArticle(user.id, article.id, oldStatus);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_isSaved ? 'Artikel disimpan' : 'Artikel dihapus dari simpanan'),
+            duration: const Duration(seconds: 1),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSaved = oldStatus);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final article =
         ModalRoute.of(context)?.settings.arguments as ArticleModel?;
+    if (article == null) return const Scaffold(body: Center(child: Text('Artikel tidak ditemukan')));
 
-    final category = article?.category ?? 'Reboisasi';
-    final title = article?.title ?? 'Judul Artikel';
-    final author = article?.authorName ?? 'Penulis';
-    final date = article?.publishDate ?? '-';
-    final imageAsset = article?.thumbnail ?? '';
-    final articleContent = article?.content ?? 'Konten artikel belum tersedia.';
+    final category = article.category;
+    final title = article.title;
+    final author = article.authorName;
+    final date = article.publishDate;
+    final imageAsset = article.thumbnail;
+    final articleContent = article.content;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF148A43),
-        onPressed: () {
-          setState(() => _isSaved = !_isSaved);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(_isSaved ? 'Artikel disimpan' : 'Artikel dihapus dari simpanan'),
-              duration: const Duration(seconds: 1),
+      floatingActionButton: _isLoadingSavedStatus
+          ? null
+          : FloatingActionButton(
+              backgroundColor: const Color(0xFF148A43),
+              onPressed: () => _toggleSave(article),
+              child: Icon(
+                _isSaved ? Icons.bookmark : Icons.bookmark_border,
+                color: Colors.white,
+              ),
             ),
-          );
-        },
-        child: Icon(
-          _isSaved ? Icons.bookmark : Icons.bookmark_border,
-          color: Colors.white,
-        ),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

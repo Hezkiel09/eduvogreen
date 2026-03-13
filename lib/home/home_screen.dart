@@ -1,16 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'widgets/home_header.dart';
 import 'widgets/home_stats_card.dart';
 import 'widgets/volunteer_card.dart';
 import 'widgets/article_card.dart';
 import 'widgets/home_bottom_nav.dart';
+import '../eduhub/services/article_service.dart';
+import '../eduhub/models/article_model.dart';
+import '../cubit/auth_cubit.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ArticleService _articleService = ArticleService();
+  late Future<List<ArticleModel>> _latestArticlesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _latestArticlesFuture = _fetchLatestArticles();
+  }
+
+  Future<List<ArticleModel>> _fetchLatestArticles() async {
+    final allArticles = await _articleService.getArticles();
+    return allArticles.take(2).toList();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // data dummy volunteers
     final volunteers = [
       {
         'title': 'Penanaman 100 Pohon Mangrove',
@@ -30,24 +52,6 @@ class HomeScreen extends StatelessWidget {
       },
     ];
 
-    // dummy article
-    final articles = [
-      {
-        'title': 'Dampak Pemanasan Global terhadap Perubahan Cuaca',
-        'date': '28 Februari 2026',
-        'author': 'Abdul',
-        'image': 'assets/article1.jpg',
-        'tag': 'Reboisasi',
-      },
-      {
-        'title': 'Cara Mengurangi Sampah Plastik dari Rumah',
-        'date': '25 Februari 2026',
-        'author': 'Joko',
-        'image': 'assets/article2.jpg',
-        'tag': 'Edukasi',
-      },
-    ];
-
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
       bottomNavigationBar: const HomeBottomNav(currentIndex: 0),
@@ -58,9 +62,21 @@ class HomeScreen extends StatelessWidget {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  const HomeHeader(
-                    userName: 'Joko',
-                    avatarAsset: 'assets/profile_default.jpg',
+                  BlocBuilder<AuthCubit, AuthState>(
+                    builder: (context, state) {
+                      String userName = 'Eduvers';
+                      String avatar = 'assets/profile_default.jpg';
+                      
+                      if (state is Success) {
+                        userName = state.user.namaPanjang ?? state.user.username;
+                        // avatar logic bisa ditambahkan nanti jika ada URL foto profil
+                      }
+                      
+                      return HomeHeader(
+                        userName: userName,
+                        avatarAsset: avatar,
+                      );
+                    },
                   ),
 
                   Padding(
@@ -122,22 +138,48 @@ class HomeScreen extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: articles.length,
+                  FutureBuilder<List<ArticleModel>>(
+                    future: _latestArticlesFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(color: Color(0xFF148A43)),
+                        );
+                      }
+                      
+                      if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text('Belum ada artikel terbaru.'),
+                        );
+                      }
 
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-
-                    itemBuilder: (context, index) {
-                      final item = articles[index];
-                      return ArticleCard(
-                        title: item['title']!,
-                        date: item['date']!,
-                        author: item['author']!,
-                        imageAsset: item['image']!,
-                        tag: item['tag']!,
+                      final articles = snapshot.data!;
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: articles.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final item = articles[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/article-detail',
+                                arguments: item,
+                              );
+                            },
+                            child: ArticleCard(
+                              title: item.title,
+                              date: item.publishDate,
+                              author: item.authorName,
+                              imageAsset: item.thumbnail,
+                              tag: item.category,
+                            ),
+                          );
+                        },
                       );
                     },
                   ),
