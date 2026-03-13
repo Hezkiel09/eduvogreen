@@ -134,7 +134,7 @@ class _ArticleDetailScreenState extends State<ArticleDetailScreen> {
                                 ),
                               );
                             },
-                            errorBuilder: (_, __, ___) => Container(
+                            errorBuilder: (_, _, _) => Container(
                               height: 260,
                               width: double.infinity,
                               color: Colors.grey.shade300,

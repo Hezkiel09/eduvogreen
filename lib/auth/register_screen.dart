@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/gestures.dart';
 import 'register_password_screen.dart';
-import 'package:flutter/gestures.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -17,6 +16,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
+
+  final bool _isLoading = false;
 
   Future<void> _selectDate() async {
     DateTime? pickedDate = await showDatePicker(

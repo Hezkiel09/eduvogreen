@@ -165,7 +165,7 @@ class _EduHubScreenState extends State<EduHubScreen> {
                     return ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
                       itemCount: articles.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 14),
+                      separatorBuilder: (_, _) => const SizedBox(height: 14),
                       itemBuilder: (context, index) {
                         final item = articles[index];
                         return GestureDetector(

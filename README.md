@@ -1,6 +1,6 @@
 # EduVoGreen 🌱
 
-A new Flutter project.  
+A new Flutter project.
 Aplikasi edukasi dan volunteer berbasis komunitas untuk lingkungan hijau. Dibangun dengan **Flutter & Supabase**.
 
 ## 🚀 Fitur-Fitur Aplikasi

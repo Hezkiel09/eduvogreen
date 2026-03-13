@@ -54,7 +54,7 @@ class ArticleListCard extends StatelessWidget {
                             ),
                           );
                         },
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           height: 150,
                           width: double.infinity,
                           color: Colors.grey.shade300,
