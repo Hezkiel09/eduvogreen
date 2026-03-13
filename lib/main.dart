@@ -9,7 +9,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SupabaseConfig.init();
   // cek session
-  
   final session = Supabase.instance.client.auth.currentSession;
   final isLoggedIn = session != null;
 
