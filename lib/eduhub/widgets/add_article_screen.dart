@@ -380,10 +380,12 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                               style: const TextStyle(fontSize: 13),
                               maxLength: 100,
                               validator: (val) {
-                                if (val == null || val.isEmpty)
+                                if (val == null || val.isEmpty) {
                                   return 'Judul wajib diisi';
-                                if (val.length < 10)
+                                }
+                                if (val.length < 10) {
                                   return 'Judul minimal 10 karakter';
+                                }
                                 return null;
                               },
                               decoration: _inputDecoration(
@@ -403,7 +405,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                             _buildLabel('Kategori', isRequired: true),
                             const SizedBox(height: 8),
                             DropdownButtonFormField<String>(
-                              value: null,
+                              initialValue: null,
                               hint: const Text(
                                 'Pilih Kategori',
                                 style: TextStyle(
@@ -429,8 +431,9 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                                   )
                                   .toList(),
                               onChanged: (val) {
-                                if (val != null)
+                                if (val != null) {
                                   setState(() => _selectedCategory = val);
+                                }
                               },
                             ),
                           ],
@@ -548,8 +551,9 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                                       contentPadding: EdgeInsets.all(16),
                                     ),
                                     validator: (val) {
-                                      if (val == null || val.isEmpty)
+                                      if (val == null || val.isEmpty) {
                                         return 'Isi artikel wajib diisi';
+                                      }
                                       return null;
                                     },
                                   ),

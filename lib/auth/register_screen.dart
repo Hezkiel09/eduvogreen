@@ -17,7 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
 
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   Future<void> _selectDate() async {
     DateTime? pickedDate = await showDatePicker(

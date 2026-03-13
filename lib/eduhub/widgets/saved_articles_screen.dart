@@ -88,7 +88,7 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: articles.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final item = articles[index];
               return GestureDetector(
@@ -130,7 +130,7 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                         height: 160,
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _imagePlaceholder(),
+                        errorBuilder: (_, _, _) => _imagePlaceholder(),
                       )
                     : _imagePlaceholder(),
               ),
