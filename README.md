@@ -4,7 +4,7 @@ A new Flutter project.
 Aplikasi edukasi dan volunteer berbasis komunitas untuk lingkungan hijau. Dibangun dengan Flutter & Supabase.
 
 ## Getting Started
-[![Flutter](https://flutter.dev/images/flutter-logo-sharing.png)](https://flutter.dev)
+- 
 
 This project is a starting point for a Flutter application.
 ## 🚀 Fitur-Fitur Aplikasi
@@ -16,8 +16,6 @@ A few resources to get you started if this is your first Flutter project:
 - **EduHub Articles** (MVP): Browse, admin CRUD (tambah/tinjau/revisi/detail)
 - **Admin Dashboard** (MVP): Stats, manage articles/volunteers, laporan masalah
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 ### **Additional Features**
 - Profile management
 - Onboarding & interest selection (`minat.dart`)
@@ -34,7 +32,7 @@ Lihat detail di [TECH_STACK.md](./TECH_STACK.md)
 | Category | Technologies |
 |----------|--------------|
 | **Framework** | Flutter (Dart) |
-| **State Mgmt** | Flutter Bloc + Cubits |
+| **State Management** | Flutter Bloc + Cubits |
 | **Backend** | Supabase (Auth/DB) |
 | **UI** | Material Design, Google Fonts (Montserrat) |
 | **Utils** | image_picker, intl |
@@ -74,8 +72,6 @@ flutter run
 ### Run on specific platform
 ```bash
 flutter run -d chrome     # Web
-flutter run -d windows    # Windows
-flutter run -d macos      # macOS
 ```
 
 ## 📚 Additional Docs
