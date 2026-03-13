@@ -217,6 +217,12 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isFormValid =
+        _titleController.text.length >= 10 &&
+        _wordCount >= 300 &&
+        _references.isNotEmpty &&
+        _thumbnailFile != null;
+
     return BlocConsumer<ArticleCubit, ArticleState>(
       listener: (context, state) {
         if (state is ArticleLoading) {

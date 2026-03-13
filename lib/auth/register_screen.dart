@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/gestures.dart';
 import 'register_password_screen.dart';
+import 'package:flutter/gestures.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,8 +17,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-
-  bool _isLoading = false;
 
   Future<void> _selectDate() async {
     DateTime? pickedDate = await showDatePicker(
@@ -39,7 +38,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _dateController.dispose();
-
     super.dispose();
   }
 
@@ -58,7 +56,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (hint == "Email" && !value.contains("@")) {
           return "Format email tidak valid";
         }
-
         return null;
       },
       decoration: InputDecoration(
@@ -89,11 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return null;
       },
       decoration: InputDecoration(
-        prefixIcon: const Icon(
-          Icons.calendar_today,
-          size: 18,
-          color: Colors.grey,
-        ),
+        prefixIcon: const Icon(Icons.calendar_today, size: 18, color: Colors.grey),
         hintText: "Tanggal Lahir",
         hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
         filled: true,
@@ -107,7 +100,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // =========================
+  void _goToPasswordScreen() {
+    if (!_formKey.currentState!.validate()) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegisterPasswordScreen(
+          email: _emailController.text.trim(),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +121,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SizedBox.expand(
             child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
-          Container(color: const Color(0xFF4FA057).withOpacity(0.9)),
-
           SafeArea(
             bottom: false,
             child: Column(
@@ -157,10 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   const SizedBox(height: 4),
                                   const Text(
                                     "Mulai dari tahu, lanjutkan dengan aksi",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black87,
-                                    ),
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                   const SizedBox(height: 30),
 
@@ -169,6 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     hint: "Nama Lengkap",
                                     icon: Icons.person,
                                   ),
+
                                   const SizedBox(height: 15),
 
                                   _buildTextField(
@@ -176,9 +176,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     hint: "Email",
                                     icon: Icons.email,
                                   ),
+
                                   const SizedBox(height: 15),
 
                                   _buildDateField(),
+
                                   const SizedBox(height: 30),
 
                                   SizedBox(
@@ -186,37 +188,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     height: 45,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF4FA057,
-                                        ),
+                                        backgroundColor: const Color(0xFF188C42),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            50,
-                                          ),
+                                          borderRadius: BorderRadius.circular(50),
                                         ),
                                         elevation: 0,
                                       ),
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  RegisterPasswordScreen(
-                                                    fullName: _nameController
-                                                        .text
-                                                        .trim(),
-                                                    email: _emailController.text
-                                                        .trim(),
-                                                    birthDate: _dateController
-                                                        .text
-                                                        .trim(),
-                                                  ),
-                                            ),
-                                          );
-                                        }
-                                      },
+                                      onPressed: _goToPasswordScreen,
                                       child: const Text(
                                         "Berikutnya",
                                         style: TextStyle(fontSize: 14),
@@ -230,22 +209,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       TextSpan(
                                         text: "Sudah punya akun? ",
                                         style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
+                                            fontSize: 12, color: Colors.grey),
                                         children: [
                                           TextSpan(
                                             text: "Masuk Sekarang",
                                             style: const TextStyle(
-                                              color: Color(0xFF5B6CF6),
+                                              color: Color(0xFF706BFF),
                                               fontWeight: FontWeight.w500,
                                             ),
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () {
                                                 Navigator.pushReplacementNamed(
-                                                  context,
-                                                  '/login',
-                                                );
+                                                    context, '/login');
                                               },
                                           ),
                                         ],
@@ -258,7 +233,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
-
                       Positioned(
                         top: 10,
                         left: 0,

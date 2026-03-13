@@ -1,6 +1,9 @@
 import 'package:eduvogreen/auth/login_screen.dart';
 import 'package:eduvogreen/auth/minat.dart';
 import 'package:eduvogreen/auth/register_screen.dart';
+import 'package:eduvogreen/auth/forgot_password_screen.dart';
+import 'package:eduvogreen/auth/reset_password_screen.dart';
+
 import 'package:eduvogreen/eduhub/eduhub_screen.dart';
 import 'package:eduvogreen/eduhub/widgets/article_detail_screen.dart';
 import 'package:eduvogreen/eduhub/widgets/add_article_screen.dart';

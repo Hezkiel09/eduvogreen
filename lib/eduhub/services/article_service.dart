@@ -32,7 +32,10 @@ class ArticleService {
           .from(_tableName)
           .select()
           .eq('status', 'approved')
-          .ilike('title', '%$query%') // Filter berdasarkan judul (case-insensitive)
+          .ilike(
+            'title',
+            '%$query%',
+          ) // Filter berdasarkan judul (case-insensitive)
           .order('created_at', ascending: false);
 
       return (response as List<dynamic>)
@@ -49,8 +52,9 @@ class ArticleService {
     try {
       final fileName = 'article_${DateTime.now().millisecondsSinceEpoch}.jpg';
       await _supabase.storage.from(_bucketName).upload(fileName, imageFile);
-      final publicUrl =
-          _supabase.storage.from(_bucketName).getPublicUrl(fileName);
+      final publicUrl = _supabase.storage
+          .from(_bucketName)
+          .getPublicUrl(fileName);
       return publicUrl;
     } catch (e) {
       print('Error uploading thumbnail: $e');
@@ -69,13 +73,17 @@ class ArticleService {
   }
 
   // Toggle simpan artikel
-  Future<void> toggleSaveArticle(String userId, String articleId, bool isAlreadySaved) async {
+  Future<void> toggleSaveArticle(
+    String userId,
+    String articleId,
+    bool isAlreadySaved,
+  ) async {
     try {
       if (isAlreadySaved) {
-        await _supabase
-            .from('saved_articles')
-            .delete()
-            .match({'user_id': userId, 'article_id': articleId});
+        await _supabase.from('saved_articles').delete().match({
+          'user_id': userId,
+          'article_id': articleId,
+        });
       } else {
         await _supabase.from('saved_articles').insert({
           'user_id': userId,
@@ -91,12 +99,11 @@ class ArticleService {
   // Cek apakah artikel sudah disimpan
   Future<bool> isArticleSaved(String userId, String articleId) async {
     try {
-      final response = await _supabase
-          .from('saved_articles')
-          .select()
-          .match({'user_id': userId, 'article_id': articleId})
-          .maybeSingle();
-      
+      final response = await _supabase.from('saved_articles').select().match({
+        'user_id': userId,
+        'article_id': articleId,
+      }).maybeSingle();
+
       return response != null;
     } catch (e) {
       print('Error checking saved status: $e');
@@ -115,7 +122,10 @@ class ArticleService {
       final data = response as List<dynamic>;
       return data
           .where((item) => item['articles'] != null)
-          .map((item) => ArticleModel.fromJson(item['articles'] as Map<String, dynamic>))
+          .map(
+            (item) =>
+                ArticleModel.fromJson(item['articles'] as Map<String, dynamic>),
+          )
           .toList();
     } catch (e) {
       print('Error fetching saved articles: $e');

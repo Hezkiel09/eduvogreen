@@ -73,4 +73,3 @@ class ArticleCubit extends Cubit<ArticleState> {
     }
   }
 }
-

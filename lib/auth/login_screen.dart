@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'auth_service.dart';
 import 'register_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,10 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void _login() {
+    String email = _emailController.text.trim();
+
+    if (email == "admin@gmail.com") {
+      Navigator.pushReplacementNamed(context, '/admin');
+    } else {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
   }
 
   @override
@@ -34,7 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox.expand(
             child: Image.asset('assets/diatas-hijau.png', fit: BoxFit.cover),
           ),
-          Container(color: const Color(0xFF4FA057).withOpacity(0.9)),
 
           SafeArea(
             bottom: false,
@@ -68,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     "Selamat Datang Kembali",
                                     style: TextStyle(
                                       fontSize: 19,
-                                      fontWeight: FontWeight.w600,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -81,7 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   const SizedBox(height: 30),
 
-                                  /// EMAIL
                                   _buildTextField(
                                     controller: _emailController,
                                     hint: "Email",
@@ -90,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                   const SizedBox(height: 15),
 
-                                  /// PASSWORD
                                   _buildPasswordField(),
 
                                   Row(
@@ -116,7 +118,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Align(
                                     alignment: Alignment.centerRight,
                                     child: TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ForgotPasswordScreen(),
+                                          ),
+                                        );
+                                      },
                                       child: const Text(
                                         "Lupa Kata Sandi?",
                                         style: TextStyle(
@@ -129,14 +139,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                   const SizedBox(height: 5),
 
-                                  /// BUTTON MASUK
                                   SizedBox(
                                     width: double.infinity,
                                     height: 45,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: const Color(
-                                          0xFF4FA057,
+                                          0xFF188C42,
                                         ),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
@@ -271,7 +280,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 "Daftar Sekarang",
                                                 style: TextStyle(
                                                   fontSize: 12,
-                                                  color: Color(0xFF5B6CF6),
+                                                  color: const Color(
+                                                    0xFF706BFF,
+                                                  ),
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),

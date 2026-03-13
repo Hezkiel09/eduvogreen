@@ -8,13 +8,12 @@ class MinatScreen extends StatefulWidget {
 }
 
 class _MinatScreenState extends State<MinatScreen> {
-
   final List<String> minatList = [
     "Reboisasi dan penanaman pohon",
     "Pelatihan relawan",
     "Pengelolaan sampah 3R",
-    "Peserta edukasi / kampanye",
-    "Konservasi dan reboisasi",
+    "Peserta edukasi/kampanye",
+    "Konservasi Lingkungan",
     "Kampanye lingkungan",
     "Pemberian edukasi",
     "Aksi membersihkan lingkungan",
@@ -41,26 +40,19 @@ class _MinatScreenState extends State<MinatScreen> {
       body: SafeArea(
         child: Column(
           children: [
-
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(24),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(35),
-                  ),
-                ),
+                decoration: const BoxDecoration(color: Colors.white),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
                     const Text(
                       "Apa yang Anda Minati?",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -68,50 +60,45 @@ class _MinatScreenState extends State<MinatScreen> {
                     const SizedBox(height: 8),
 
                     const Text(
-                      "Pilih topik yang Anda sukai untuk mendapatkan rekomendasi yang lebih baik",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
+                      "Pilih topik yang Anda sukai untuk mendapatkan \nrekomendasi yang lebih baik",
+                      style: TextStyle(fontSize: 12, color: Colors.black),
                     ),
 
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 32),
 
                     Expanded(
                       child: SingleChildScrollView(
                         child: Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
+                          spacing: 12,
+                          runSpacing: 12,
                           children: minatList.map((item) {
-                            final bool isSelected =
-                                selectedMinat.contains(item);
+                            final bool isSelected = selectedMinat.contains(
+                              item,
+                            );
 
                             return GestureDetector(
                               onTap: () => toggleMinat(item),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
+                                  horizontal: 10,
                                   vertical: 10,
                                 ),
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? const Color(0xFF6FCF97)
+                                      ? const Color(0xFF4ADE80)
                                       : Colors.transparent,
-                                  borderRadius:
-                                      BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(25),
                                   border: Border.all(
                                     color: isSelected
-                                        ? const Color(0xFF6FCF97)
+                                        ? const Color(0xFF4ADE80)
                                         : Colors.grey.shade400,
                                   ),
                                 ),
                                 child: Text(
                                   item,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: isSelected
-                                        ? Colors.white
-                                        : Colors.black87,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: Color(0xFF525252),
                                   ),
                                 ),
                               ),
@@ -122,35 +109,56 @@ class _MinatScreenState extends State<MinatScreen> {
                     ),
 
                     const SizedBox(height: 20),
+
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Transform.translate(
+                        offset: const Offset(-25, 0),
+                        child: Image.asset(
+                          'assets/minat.png',
+                          height: 320,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
                   ],
                 ),
               ),
             ),
 
-            // BUTTON SECTION
+            // Button Section
             Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(color: Colors.black, width: 1),
+                  bottom: BorderSide(color: Colors.black, width: 1),
+                ),
+              ),
               padding: const EdgeInsets.all(20),
-              color: Colors.white,
               child: SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
                   onPressed: isButtonEnabled
                       ? () {
-                          // lanjut ke halaman berikutnya
+                          Navigator.pushReplacementNamed(context, '/home');
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isButtonEnabled
-                        ? const Color(0xFF4FA057)
+                        ? const Color(0xFF188C42)
                         : Colors.grey.shade400,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: const Text(
                     "Lanjutkan",
                     style: TextStyle(
+                      fontWeight: FontWeight.bold,
                       fontSize: 16,
                       color: Colors.white,
                     ),
