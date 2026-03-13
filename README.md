@@ -57,11 +57,7 @@ Flutter App
 | Platform | Status |
 |----------|--------|
 | **Android** | ✅ Ready |
-| **iOS** | ✅ Ready |
 | **Web** | ✅ Ready |
-| **Windows** | ✅ Ready |
-| **macOS** | ✅ Ready |
-| **Linux** | ✅ Ready |
 
 ## 🏁 Getting Started
 
