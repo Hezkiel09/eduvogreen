@@ -18,11 +18,11 @@ Aplikasi edukasi dan volunteer berbasis komunitas untuk lingkungan hijau. Dibang
 - Multi-role access (User/Admin)
 
 ## 🛠️ Tech Stack
-**Detail lengkap di [TECH_STACK.md](./TECH_STACK.md)**
+
 
 | Layer | Tech | Versi | Fungsi |
 |-------|------|-------|--------|
-| **Framework** | Flutter + Dart | sdk ^3.10.7 | UI cross-platform (Android/iOS/Web/Desktop) |
+| **Framework** | Flutter + Dart | sdk ^3.10.7 | UI cross-platform (Android/Web) |
 | **UI/Styling** | Material Design, Google Fonts (Montserrat), Assets (PNG icons/images) | google_fonts ^8.0.2 / cupertino_icons ^1.0.8 | Theme hijau, responsive widgets |
 | **State Management** | Flutter Bloc/Cubit + RepositoryProvider | flutter_bloc ^9.1.1 | AuthCubit, ArticleCubit; DI via MultiBlocProvider |
 | **Backend/Database** | Supabase | ^2.12.0 | Auth, Realtime DB, Storage (images) |
@@ -76,9 +76,7 @@ Image: image_picker → Supabase.storage.upload()
 | Platform | Status |
 |----------|--------|
 | **Android** | ✅ Ready |
-| **iOS** | ✅ Ready |
 | **Web** | ✅ Ready |
-| **Desktop** | ✅ Ready |
 
 ## 🏁 Getting Started
 
@@ -95,14 +93,10 @@ flutter run
 ### Run on specific platform
 ```bash
 flutter run -d chrome  # Web
-flutter run -d windows # Windows
 ```
 
 ## 📚 Additional Docs
-- [Tech Stack Detail](./TECH_STACK.md)
-- [Analysis Options](./analysis_options.yaml)
 - [Pubspec Dependencies](./pubspec.yaml)
-- [TODO Progress](./TODO.md)
 
 ## 🤝 Contributing
 1. Fork project
