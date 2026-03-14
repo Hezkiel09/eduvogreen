@@ -8,13 +8,13 @@ Aplikasi edukasi dan volunteer berbasis komunitas untuk lingkungan hijau. Dibang
 ### **MVP Features**
 - **Authentication** (MVP): Login/register email-password, forgot/reset password via Supabase Auth
 - **Volunteer Events** (MVP): List events, detail, join/report dengan image picker
-- **EduHub Articles** (MVP): Browse, admin CRUD (tambah/tinjau/revisi/detail)
+- **EduHub Articles** (MVP): Browse
 
 ### **Additional Features**
 - Profile management
 - Onboarding & interest selection (`minat.dart`)
 - Bottom navigation, responsive tabs/popups
-- Multi-role access (User/Admin)
+- Multi-role access (User)
 
 ## 🛠️ Tech Stack
 
@@ -60,7 +60,6 @@ Auth Flow:
    ├── /home → Volunteer/Eduhub/Profile
    ├── /volunteer → Events, report (image_picker → Supabase storage)
    └── /eduhub → Articles via ArticleCubit
-Admin: /admin/dashboard → CRUD articles/volunteers
 Reset: /forgot-password → /reset-password (deep link)
 ```
 
